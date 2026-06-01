@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Cores base */
+  --fundo: #f5f4f0;
+  --fundo-alt: #eeede8;
+  --superficie: #ffffff;
+  --superficie-alt: #fafaf8;
+  --superficie-hover: #f5f4f0;
+  --borda: #e2e0d8;
+
+  /* Tipografia */
+  --texto: #1a1916;
+  --texto-secundario: #6b6860;
+  --texto-terciario: #a8a59e;
+
+  /* Acento — verde musgo profissional */
+  --acento: #3d6b4f;
+  --acento-hover: #2e5440;
+  --acento-alpha: rgba(61, 107, 79, 0.12);
+
+  /* Semânticas */
+  --sucesso: #2d6a4f;
+  --sucesso-bg: #edf7f1;
+  --erro: #b33a3a;
+  --erro-bg: #fdf0f0;
+
+  /* Layout */
+  --raio: 10px;
+  --sombra: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+}
+
+html, body {
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar sutil */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--borda); border-radius: 3px; }

@@ -1,0 +1,199 @@
+.pagina {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.header {
+  background: var(--superficie);
+  border-bottom: 1px solid var(--borda);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.headerInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.875rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.logoArea {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logoIcone {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.logoTitulo {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--texto);
+  letter-spacing: -0.01em;
+}
+
+.logoSub {
+  font-size: 0.75rem;
+  color: var(--texto-terciario);
+  display: block;
+}
+
+.etapa {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 0.4rem 0.875rem;
+}
+
+.etapaAtual {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--acento);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.etapaSep {
+  color: var(--borda);
+  font-weight: 300;
+}
+
+.etapaTotal {
+  font-size: 0.85rem;
+  color: var(--texto-terciario);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.etapaLabel {
+  font-size: 0.78rem;
+  color: var(--texto-secundario);
+  margin-left: 0.4rem;
+  font-weight: 500;
+}
+
+/* Main */
+.main {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* Seções */
+.secao {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.secaoHeader {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.secaoNumero {
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--acento);
+  background: var(--acento-alpha);
+  border: 1px solid var(--acento);
+  border-radius: 5px;
+  padding: 0.2rem 0.45rem;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.secaoTitulo {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--texto);
+  letter-spacing: -0.01em;
+}
+
+.secaoDesc {
+  font-size: 0.83rem;
+  color: var(--texto-secundario);
+  margin-top: 0.2rem;
+}
+
+/* Rodapé */
+.rodape {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.25rem;
+  padding: 1.25rem 0 0.5rem;
+  border-top: 1px solid var(--borda);
+}
+
+.aviso {
+  font-size: 0.83rem;
+  color: var(--texto-secundario);
+  flex: 1;
+}
+
+.btnProsseguir {
+  height: 2.6rem;
+  padding: 0 1.75rem;
+  background: var(--acento);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.btnProsseguir:hover:not(:disabled) {
+  background: var(--acento-hover);
+  transform: translateY(-1px);
+}
+
+.btnProsseguir:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .etapaLabel {
+    display: none;
+  }
+  .headerInner {
+    padding: 0.75rem 1rem;
+  }
+  .main {
+    padding: 1.25rem 1rem;
+  }
+}
