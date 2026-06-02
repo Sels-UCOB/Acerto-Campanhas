@@ -47,7 +47,7 @@ export const EXIBICAO = {
   numLideres: 4,
 
   // Índice a partir do qual os líderes são marcados como (opcional)
-  liderOpcionalAPartirDe: 2,
+  liderOpcionalAPartirDe: 1,
 };
 
 // ─── Identidade da organização ────────────────────────────────────────────────

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { useAcerto } from "@/context/AcertoContext";
 import { XlsxUploader } from "@/components/upload/XlsxUploader";
 import { PreviewImportacao } from "@/components/upload/PreviewImportacao";
@@ -9,6 +10,7 @@ import type { DadosImportados } from "@/types/acerto";
 import styles from "./page.module.css";
 
 export default function Tela1() {
+  const router = useRouter();
   const { state, setDadosImportados, setConfig, resetDados } = useAcerto();
   const { dadosImportados, config } = state;
 
@@ -19,26 +21,15 @@ export default function Tela1() {
 
   return (
     <div className={styles.pagina}>
-      {/* Cabeçalho */}
-      <header className={styles.header}>
-        <div className={styles.headerInner}>
-          <div className={styles.logoArea}>
-            <span className={styles.logoIcone}>📚</span>
-            <div>
-              <h1 className={styles.logoTitulo}>Acerto de Colportagem</h1>
-              <span className={styles.logoSub}>Sistema de gestão de campanhas</span>
-            </div>
-          </div>
+      <main className={styles.main}>
+        <div className={styles.paginaTitulo}>
+          <h1 className={styles.titulo}>Importação &amp; Configuração</h1>
           <div className={styles.etapa}>
             <span className={styles.etapaAtual}>1</span>
             <span className={styles.etapaSep}>/</span>
             <span className={styles.etapaTotal}>3</span>
-            <span className={styles.etapaLabel}>Importação & Configuração</span>
           </div>
         </div>
-      </header>
-
-      <main className={styles.main}>
         <div className={styles.grid}>
 
           {/* Coluna esquerda — Importação */}
@@ -94,10 +85,7 @@ export default function Tela1() {
             className={styles.btnProsseguir}
             disabled={!podeProsseguir}
             type="button"
-            onClick={() => {
-              /* navegar para Tela 2 */
-              alert("Tela 2 em construção — dados prontos!");
-            }}
+            onClick={() => router.push("/lancamentos")}
           >
             Prosseguir para Lançamentos →
           </button>
