@@ -21,7 +21,7 @@
   border-radius: var(--raio);
   box-shadow: var(--sombra);
   width: 100%;
-  max-width: 380px;
+  max-width: 480px;
   animation: slideUp 0.15s ease;
 }
 
@@ -67,6 +67,108 @@
 
 .corpo {
   padding: 1.25rem;
+  overflow-y: auto;
+  max-height: 72vh;
+}
+
+/* ── Seções do IRPF ── */
+.secao {
+  margin-bottom: 1.25rem;
+}
+
+.secao:last-child {
+  margin-bottom: 0;
+}
+
+.secaoTitulo {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--acento);
+  margin-bottom: 0.5rem;
+}
+
+/* ── Tabela progressiva ── */
+.tabelaIRPF {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0.5rem;
+}
+
+.tabelaIRPF th {
+  text-align: left;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--texto-terciario);
+  border-bottom: 1px solid var(--borda);
+}
+
+.tabelaIRPF td {
+  padding: 0.28rem 0.4rem;
+  border-bottom: 1px solid var(--borda);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--texto-secundario);
+}
+
+.tabelaIRPF tr:last-child td {
+  border-bottom: none;
+}
+
+.faixaAplicada td {
+  background: var(--acento-alpha);
+  color: var(--texto) !important;
+  font-weight: 700;
+}
+
+/* ── Fórmula ── */
+.formula {
+  font-size: 0.8rem;
+  color: var(--texto-secundario);
+  background: var(--fundo-alt);
+  border-radius: 5px;
+  padding: 0.4rem 0.6rem;
+  font-family: 'IBM Plex Mono', monospace;
+  margin-top: 0.35rem;
+}
+
+.formula strong {
+  color: var(--acento);
+}
+
+.formulaDestaque {
+  margin-top: 0.25rem;
+  border: 1px solid var(--borda);
+}
+
+/* ── Etapa 2 ── */
+.etapa2Info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.83rem;
+  color: var(--texto-secundario);
+  flex-wrap: wrap;
+}
+
+.etapa2Info strong {
+  color: var(--texto);
+}
+
+.etapa2Tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: var(--acento-alpha);
+  color: var(--acento);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
 }
 
 .lista {

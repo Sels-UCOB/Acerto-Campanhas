@@ -13,7 +13,7 @@ export function CabecalhoLider() {
     config.tipoCampanha === "Outro" ? config.tipoCampanhaOutro : config.tipoCampanha;
   const campo =
     config.campo === "Outro" ? config.campoOutro : config.campo;
-  const lideres = config.lideres.filter(Boolean);
+  const lideres = config.lideres.filter((l) => l.nome.trim()).map((l) => l.nome);
 
   return (
     <section className={styles.cabecalho}>
@@ -36,7 +36,7 @@ export function CabecalhoLider() {
         </div>
         <div className={styles.item}>
           <dt className={styles.rotulo}>Caixa</dt>
-          <dd className={styles.valor}>{config.caixa || "—"}</dd>
+          <dd className={styles.valor}>{config.caixa.nome || "—"}</dd>
         </div>
         <div className={styles.item}>
           <dt className={styles.rotulo}>Líderes</dt>

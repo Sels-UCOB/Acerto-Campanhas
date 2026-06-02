@@ -16,8 +16,8 @@ export default function Tela1() {
 
   const podeProsseguir =
     dadosImportados !== null &&
-    config.lideres[0].trim() !== "" &&
-    config.caixa.trim() !== "";
+    config.lideres[0].nome.trim() !== "" &&
+    config.caixa.nome.trim() !== "";
 
   return (
     <div className={styles.pagina}>

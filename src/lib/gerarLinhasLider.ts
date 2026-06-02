@@ -15,6 +15,7 @@ interface Params {
   compraBonificada: number;
   jurosCampanha: number | null;
   salarioCaixa: number | null;
+  caixaConfig: { nome: string; auxilioPercentual: number } | null;
 }
 
 export function gerarLinhasLider({
@@ -23,6 +24,7 @@ export function gerarLinhasLider({
   compraBonificada,
   jurosCampanha,
   salarioCaixa,
+  caixaConfig,
 }: Params): LinhaTabela[] {
   const linhas: LinhaTabela[] = [];
 
@@ -126,6 +128,19 @@ export function gerarLinhasLider({
       excluirDoSaldo: false,
       clicavel: true,
       detalheIRPF: irpfDetalhe,
+    });
+  }
+
+  if (caixaConfig && caixaConfig.nome.trim() && caixaConfig.auxilioPercentual > 0) {
+    const auxilioCaixa = arred((caixaConfig.auxilioPercentual / 100) * compraBonificada);
+    linhas.push({
+      id: mk("auxilio", "caixa"),
+      tipo: "auxilio",
+      liderNome: null,
+      descricao: `Auxílio – ${caixaConfig.nome}`,
+      valor: -auxilioCaixa,
+      excluirDoSaldo: false,
+      clicavel: false,
     });
   }
 

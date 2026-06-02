@@ -12,7 +12,7 @@ export function Lideres() {
   const [confirmarId, setConfirmarId] = useState<string | null>(null);
 
   useEffect(() => {
-    initLideres(state.config.lideres.filter(Boolean));
+    initLideres(state.config.lideres.filter((l) => l.nome).map((l) => l.nome));
   }, [initLideres, state.config.lideres]);
 
   const naoConfigurados = lideres.filter(

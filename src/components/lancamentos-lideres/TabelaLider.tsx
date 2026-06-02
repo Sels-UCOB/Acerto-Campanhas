@@ -19,10 +19,22 @@ function formatDC(valor: number): string {
 }
 
 export function TabelaLider() {
-  const { configs, cartaBolsa, jurosCampanha, salarioCaixa } =
-    useLancamentoLider();
+  const { cartaBolsa, jurosCampanha } = useLancamentoLider();
   const { lancamentos } = useLancamento();
   const { state } = useAcerto();
+  const salarioCaixa = state.config.caixa.salarioCaixa;
+
+  const configs = state.config.lideres
+    .filter((l) => l.nome.trim())
+    .map((l) => ({
+      nome: l.nome,
+      bonificacaoPercentual: l.bonificacaoPercentual,
+      auxilioPercentual: l.auxilioPercentual,
+    }));
+
+  const caixaConfig = state.config.caixa.nome.trim()
+    ? { nome: state.config.caixa.nome, auxilioPercentual: state.config.caixa.auxilioPercentual }
+    : null;
   const [modalLinha, setModalLinha] = useState<LinhaTabela | null>(null);
 
   const compraBonificada = state.dadosImportados?.bonificado ?? 0;
@@ -44,6 +56,7 @@ export function TabelaLider() {
         compraBonificada,
         jurosCampanha,
         salarioCaixa,
+        caixaConfig,
       }),
     [configs, cartaBolsa, compraBonificada, jurosCampanha, salarioCaixa]
   );

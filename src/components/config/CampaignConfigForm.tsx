@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import type { ConfigCampanha, CampanhaType, CampoType } from "@/types/acerto";
+import React, { useState } from "react";
+import type { ConfigCampanha, CampanhaType, CampoType, LiderAcerto, CaixaAcerto } from "@/types/acerto";
 import { CAMPANHAS, CAMPOS, EXIBICAO } from "@/config/app";
 import styles from "./CampaignConfigForm.module.css";
 
@@ -11,10 +11,21 @@ interface CampaignConfigFormProps {
 }
 
 export function CampaignConfigForm({ config, onChange }: CampaignConfigFormProps) {
-  const setLider = (idx: number, valor: string) => {
-    const novos = [...config.lideres] as ConfigCampanha["lideres"];
-    novos[idx] = valor;
-    onChange({ lideres: novos });
+  const [localLideres, setLocalLideres] = useState<ConfigCampanha["lideres"]>(
+    () => config.lideres.map((l) => ({ ...l })) as ConfigCampanha["lideres"]
+  );
+  const [localCaixa, setLocalCaixa] = useState<CaixaAcerto>(() => ({ ...config.caixa }));
+
+  const setLiderField = (idx: number, campo: keyof LiderAcerto, valor: string | number) => {
+    setLocalLideres((prev) => {
+      const novos = prev.map((l) => ({ ...l })) as ConfigCampanha["lideres"];
+      novos[idx] = { ...novos[idx], [campo]: valor };
+      return novos;
+    });
+  };
+
+  const salvarLideres = () => {
+    onChange({ lideres: localLideres, caixa: localCaixa });
   };
 
   return (
@@ -83,22 +94,88 @@ export function CampaignConfigForm({ config, onChange }: CampaignConfigFormProps
       {/* Líderes */}
       <fieldset className={styles.fieldset}>
         <legend className={styles.legend}>Líderes</legend>
-        <div className={styles.grid2}>
-          {(Array.from({ length: EXIBICAO.numLideres }, (_, i) => i + 1) as number[]).map((n) => (
-            <div key={n} className={styles.grupo}>
-              <label className={styles.label} htmlFor={`lider${n}`}>
-                {n}º Líder {n > EXIBICAO.liderOpcionalAPartirDe && <span className={styles.opcional}>(opcional)</span>}
-              </label>
-              <input
-                id={`lider${n}`}
-                className={styles.input}
-                type="text"
-                placeholder={`Nome do ${n}º líder`}
-                value={config.lideres[n - 1]}
-                onChange={(e) => setLider(n - 1, e.target.value)}
-              />
-            </div>
-          ))}
+        <div className={styles.lideresHeader}>
+          <span className={styles.lideresColNome}>Nome</span>
+          <span className={styles.lideresColPct}>Bonific. % / Sal.</span>
+          <span className={styles.lideresColPct}>Auxílio %</span>
+        </div>
+        {Array.from({ length: EXIBICAO.numLideres }, (_, i) => i).map((idx) => (
+          <div key={idx} className={styles.liderRow}>
+            <input
+              className={styles.input}
+              type="text"
+              placeholder={`${idx + 1}º líder${idx >= EXIBICAO.liderOpcionalAPartirDe ? " (opcional)" : ""}`}
+              value={localLideres[idx].nome}
+              onChange={(e) => setLiderField(idx, "nome", e.target.value)}
+            />
+            <input
+              className={`${styles.input} ${styles.inputPct}`}
+              type="number"
+              placeholder="0"
+              min={0}
+              max={100}
+              step="0.01"
+              value={localLideres[idx].bonificacaoPercentual || ""}
+              onChange={(e) =>
+                setLiderField(idx, "bonificacaoPercentual", parseFloat(e.target.value) || 0)
+              }
+            />
+            <input
+              className={`${styles.input} ${styles.inputPct}`}
+              type="number"
+              placeholder="0"
+              min={0}
+              max={100}
+              step="0.01"
+              value={localLideres[idx].auxilioPercentual || ""}
+              onChange={(e) =>
+                setLiderField(idx, "auxilioPercentual", parseFloat(e.target.value) || 0)
+              }
+            />
+          </div>
+        ))}
+        <div className={styles.liderSeparador}>
+          <span>Caixa</span>
+        </div>
+        <div className={styles.liderRow}>
+          <input
+            className={styles.input}
+            type="text"
+            placeholder="Nome do caixa"
+            value={localCaixa.nome}
+            onChange={(e) => setLocalCaixa((p) => ({ ...p, nome: e.target.value }))}
+          />
+          <input
+            className={`${styles.input} ${styles.inputPct}`}
+            type="number"
+            placeholder="Sal."
+            min={0}
+            step="0.01"
+            value={localCaixa.salarioCaixa ?? ""}
+            onChange={(e) =>
+              setLocalCaixa((p) => ({
+                ...p,
+                salarioCaixa: e.target.value === "" ? null : parseFloat(e.target.value),
+              }))
+            }
+          />
+          <input
+            className={`${styles.input} ${styles.inputPct}`}
+            type="number"
+            placeholder="0"
+            min={0}
+            max={100}
+            step="0.01"
+            value={localCaixa.auxilioPercentual || ""}
+            onChange={(e) =>
+              setLocalCaixa((p) => ({ ...p, auxilioPercentual: parseFloat(e.target.value) || 0 }))
+            }
+          />
+        </div>
+        <div className={styles.liderSalvar}>
+          <button type="button" className={styles.btnSalvar} onClick={salvarLideres}>
+            Salvar
+          </button>
         </div>
       </fieldset>
 
@@ -106,18 +183,6 @@ export function CampaignConfigForm({ config, onChange }: CampaignConfigFormProps
       <fieldset className={styles.fieldset}>
         <legend className={styles.legend}>Financeiro & Organização</legend>
         <div className={styles.grid2}>
-          <div className={styles.grupo}>
-            <label className={styles.label} htmlFor="caixa">Caixa</label>
-            <input
-              id="caixa"
-              className={styles.input}
-              type="text"
-              placeholder="Nome do caixa"
-              value={config.caixa}
-              onChange={(e) => onChange({ caixa: e.target.value })}
-            />
-          </div>
-
           <div className={styles.grupo}>
             <label className={styles.label} htmlFor="subConta">SubConta Campanha</label>
             <input

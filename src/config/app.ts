@@ -27,11 +27,13 @@ export const CAMPOS: CampoType[] = [
 
 // ─── Valores padrão do formulário ─────────────────────────────────────────────
 // Estes valores são usados ao abrir o sistema ou ao resetar o formulário.
+const LIDER_VAZIO = { nome: "", bonificacaoPercentual: 0, auxilioPercentual: 0 } as const;
+
 export const CONFIG_PADRAO: ConfigCampanha = {
   tipoCampanha: "Sonhando Alto 1",
   tipoCampanhaOutro: "",
-  lideres: ["", "", "", ""],
-  caixa: "",
+  lideres: [{ ...LIDER_VAZIO }, { ...LIDER_VAZIO }, { ...LIDER_VAZIO }, { ...LIDER_VAZIO }],
+  caixa: { nome: "", salarioCaixa: null, auxilioPercentual: 0 },
   subContaCampanha: "",
   departamento: "",
   campo: "AOM",
