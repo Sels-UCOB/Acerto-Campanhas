@@ -131,6 +131,23 @@ export function gerarLinhasLider({
     });
   }
 
+  const temItensCaixa =
+    (caixaConfig && caixaConfig.nome.trim() && caixaConfig.auxilioPercentual > 0) ||
+    salarioCaixa !== null;
+
+  if (temItensCaixa) {
+    const nomeCaixa = caixaConfig?.nome.trim() || "Caixa";
+    linhas.push({
+      id: mk("header", "caixa"),
+      tipo: "header",
+      liderNome: null,
+      descricao: nomeCaixa,
+      valor: 0,
+      excluirDoSaldo: true,
+      clicavel: false,
+    });
+  }
+
   if (caixaConfig && caixaConfig.nome.trim() && caixaConfig.auxilioPercentual > 0) {
     const auxilioCaixa = arred((caixaConfig.auxilioPercentual / 100) * compraBonificada);
     linhas.push({
