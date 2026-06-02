@@ -1,0 +1,114 @@
+.painel {
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: sticky;
+  top: 1rem;
+}
+
+.titulo {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--texto);
+  letter-spacing: -0.01em;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--borda);
+}
+
+.secaoLider {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  background: var(--fundo-alt);
+  border-radius: 8px;
+}
+
+.liderNome {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--acento);
+  letter-spacing: 0.01em;
+}
+
+.secaoTitulo {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--texto-secundario);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--texto-secundario);
+}
+
+.input,
+.select {
+  height: 2rem;
+  padding: 0 0.625rem;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  font-size: 0.83rem;
+  font-family: inherit;
+  color: var(--texto);
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.input:focus,
+.select:focus {
+  border-color: var(--acento);
+  box-shadow: 0 0 0 2px var(--acento-alpha);
+}
+
+.inputPct {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.inputPct .input {
+  flex: 1;
+}
+
+.pctSufixo {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--texto-secundario);
+  flex-shrink: 0;
+}
+
+.separador {
+  height: 1px;
+  background: var(--borda);
+  margin: 0.25rem 0;
+}
+
+.nota {
+  font-size: 0.7rem;
+  color: var(--texto-terciario);
+  font-style: italic;
+}
+
+.aviso {
+  font-size: 0.8rem;
+  color: var(--texto-secundario);
+  padding: 0.5rem;
+  background: var(--fundo-alt);
+  border-radius: 6px;
+}

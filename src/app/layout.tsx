@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { AcertoProvider } from "@/context/AcertoContext";
 import { ConfiguracaoProvider } from "@/context/ConfiguracaoContext";
+import { LancamentoProvider } from "@/context/LancamentoContext";
+import { LancamentoLiderProvider } from "@/context/LancamentoLiderContext";
 import { AppShell } from "@/components/shell/AppShell";
 import "./globals.css";
 
@@ -15,7 +17,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <AcertoProvider>
           <ConfiguracaoProvider>
-            <AppShell>{children}</AppShell>
+            <LancamentoProvider>
+              <LancamentoLiderProvider>
+                <AppShell>{children}</AppShell>
+              </LancamentoLiderProvider>
+            </LancamentoProvider>
           </ConfiguracaoProvider>
         </AcertoProvider>
       </body>

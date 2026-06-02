@@ -1,4 +1,4 @@
-export default function LancamentosLayout({
+export default function LancamentosLideresLayout({
   children,
 }: {
   children: React.ReactNode;

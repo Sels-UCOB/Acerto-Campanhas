@@ -58,10 +58,13 @@ export function LancamentoProvider({ children }: { children: ReactNode }) {
           });
         }
       });
+      // Só trava a inicialização quando os dados já foram importados.
+      // Enquanto dadosImportados for null o efeito re-executa na próxima
+      // mudança, garantindo que os colportores sejam pré-preenchidos.
+      setInicializado(true);
     }
 
     setLancamentos(linhas);
-    setInicializado(true);
   }, [inicializado, state.dadosImportados, tipos]);
 
   const addLancamento = useCallback(() => {

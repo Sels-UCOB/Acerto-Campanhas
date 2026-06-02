@@ -6,9 +6,10 @@ import { usePathname } from "next/navigation";
 import styles from "./AppShell.module.css";
 
 const NAV = [
-  { href: "/",              icone: "📋", label: "Acerto" },
-  { href: "/lancamentos",   icone: "📝", label: "Lançamentos" },
-  { href: "/configuracoes", icone: "⚙",  label: "Configurações" },
+  { href: "/",                     icone: "📋", label: "Acerto" },
+  { href: "/lancamentos",          icone: "📝", label: "Lançamentos" },
+  { href: "/lancamentos-lideres",  icone: "👥", label: "Líderes" },
+  { href: "/configuracoes",        icone: "⚙",  label: "Configurações" },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
