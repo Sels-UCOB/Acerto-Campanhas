@@ -108,6 +108,18 @@ export function gerarLinhasLider({
       clicavel: false,
     });
 
+    if (carta > 0) {
+      linhas.push({
+        id: mk("cartaBolsa", config.nome),
+        tipo: "cartaBolsa",
+        liderNome: config.nome,
+        descricao: `Carta de Bolsa – ${config.nome}`,
+        valor: carta,
+        excluirDoSaldo: false,
+        clicavel: false,
+      });
+    }
+
     linhas.push({
       id: mk("inss", config.nome),
       tipo: "inss",

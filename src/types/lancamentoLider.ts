@@ -42,7 +42,8 @@ export type RowTipo =
   | "irpf"
   | "fpc"
   | "jurosCampanha"
-  | "salarioCaixa";
+  | "salarioCaixa"
+  | "cartaBolsa";
 
 export interface LinhaTabela {
   id: string;
