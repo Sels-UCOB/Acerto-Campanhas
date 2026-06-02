@@ -25,24 +25,25 @@ export const CAMPOS: CampoType[] = [
 export interface DefaultLider {
   bonificacaoPercentual: number;
   auxilioPercentual: number;
+  percentualDebito: number;
 }
 
 export const DEFAULTS_LIDERES: Record<1 | 2 | 3 | 4, DefaultLider[]> = {
-  1: [{ bonificacaoPercentual: 14, auxilioPercentual: 2 }],
+  1: [{ bonificacaoPercentual: 14, auxilioPercentual: 2, percentualDebito: 100 }],
   2: [
-    { bonificacaoPercentual: 11, auxilioPercentual: 3 },
-    { bonificacaoPercentual: 7,  auxilioPercentual: 0 },
+    { bonificacaoPercentual: 11, auxilioPercentual: 3, percentualDebito: 61.11 },
+    { bonificacaoPercentual: 7,  auxilioPercentual: 0, percentualDebito: 38.89 },
   ],
   3: [
-    { bonificacaoPercentual: 9, auxilioPercentual: 4 },
-    { bonificacaoPercentual: 6, auxilioPercentual: 0 },
-    { bonificacaoPercentual: 5, auxilioPercentual: 0 },
+    { bonificacaoPercentual: 9, auxilioPercentual: 4, percentualDebito: 45 },
+    { bonificacaoPercentual: 6, auxilioPercentual: 0, percentualDebito: 30 },
+    { bonificacaoPercentual: 5, auxilioPercentual: 0, percentualDebito: 25 },
   ],
   4: [
-    { bonificacaoPercentual: 0, auxilioPercentual: 0 },
-    { bonificacaoPercentual: 0, auxilioPercentual: 0 },
-    { bonificacaoPercentual: 0, auxilioPercentual: 0 },
-    { bonificacaoPercentual: 0, auxilioPercentual: 0 },
+    { bonificacaoPercentual: 0, auxilioPercentual: 0, percentualDebito: 0 },
+    { bonificacaoPercentual: 0, auxilioPercentual: 0, percentualDebito: 0 },
+    { bonificacaoPercentual: 0, auxilioPercentual: 0, percentualDebito: 0 },
+    { bonificacaoPercentual: 0, auxilioPercentual: 0, percentualDebito: 0 },
   ],
 };
 
@@ -62,14 +63,14 @@ export const MIN_COLPORTORES_POR_LIDER: Partial<Record<CampanhaType, number>> = 
 };
 
 // ─── Valores padrão do formulário ─────────────────────────────────────────────
-const LIDER_VAZIO = { nome: "", bonificacaoPercentual: 0, auxilioPercentual: 0, possuiVeiculoSPA: false } as const;
+const LIDER_VAZIO = { nome: "", bonificacaoPercentual: 0, auxilioPercentual: 0, percentualDebito: 0, possuiVeiculoSPA: false } as const;
 
 export const CONFIG_PADRAO: ConfigCampanha = {
   tipoCampanha: "Sonhando Alto 1",
   tipoCampanhaOutro: "",
   numLideres: 1,
   lideres: [
-    { nome: "", bonificacaoPercentual: 14, auxilioPercentual: 2, possuiVeiculoSPA: false },
+    { nome: "", bonificacaoPercentual: 14, auxilioPercentual: 2, percentualDebito: 100, possuiVeiculoSPA: false },
     { ...LIDER_VAZIO },
     { ...LIDER_VAZIO },
     { ...LIDER_VAZIO },

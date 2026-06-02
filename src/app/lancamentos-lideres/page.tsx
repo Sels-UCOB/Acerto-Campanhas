@@ -4,6 +4,8 @@ import React from "react";
 import { CabecalhoLider } from "@/components/lancamentos-lideres/CabecalhoLider";
 import { TabelaLider } from "@/components/lancamentos-lideres/TabelaLider";
 import { PainelConfig } from "@/components/lancamentos-lideres/PainelConfig";
+import { ResumoLideres } from "@/components/debitos/ResumoLideres";
+import { TabelaDevedores } from "@/components/debitos/TabelaDevedores";
 import styles from "./page.module.css";
 
 export default function LancamentosLideresPage() {
@@ -19,9 +21,15 @@ export default function LancamentosLideresPage() {
           </div>
         </div>
         <CabecalhoLider />
-        <div className={styles.corpo}>
-          <TabelaLider />
-          <PainelConfig />
+        <div className={styles.mainGrid}>
+          <div className={styles.colunaConteudo}>
+            <TabelaLider />
+            <ResumoLideres />
+          </div>
+          <div className={styles.colunaSide}>
+            <PainelConfig />
+            <TabelaDevedores />
+          </div>
         </div>
       </main>
     </div>

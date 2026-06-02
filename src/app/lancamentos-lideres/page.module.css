@@ -53,15 +53,29 @@
   font-family: 'IBM Plex Mono', monospace;
 }
 
-.corpo {
+/* ── Layout principal: coluna esquerda (conteúdo) + coluna direita (sidebar) ── */
+.mainGrid {
   display: grid;
   grid-template-columns: 1fr 290px;
   gap: 1.5rem;
   align-items: start;
 }
 
+.colunaConteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.colunaSide {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 @media (max-width: 960px) {
-  .corpo {
+  .mainGrid {
     grid-template-columns: 1fr;
   }
   .main {

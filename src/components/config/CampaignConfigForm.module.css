@@ -85,7 +85,7 @@
 /* ── Líderes ── */
 .lideresHeader {
   display: grid;
-  grid-template-columns: 1fr 80px 80px;
+  grid-template-columns: 1fr 68px 68px 62px;
   gap: 0.5rem;
   margin-bottom: 0.3rem;
 }
@@ -102,7 +102,7 @@
 
 .liderRow {
   display: grid;
-  grid-template-columns: 1fr 80px 80px;
+  grid-template-columns: 1fr 68px 68px 62px;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
@@ -202,9 +202,9 @@
     grid-column: auto;
   }
   .lideresHeader {
-    grid-template-columns: 1fr 68px 68px;
+    grid-template-columns: 1fr 56px 56px 50px;
   }
   .liderRow {
-    grid-template-columns: 1fr 68px 68px;
+    grid-template-columns: 1fr 56px 56px 50px;
   }
 }

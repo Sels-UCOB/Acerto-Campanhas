@@ -112,3 +112,41 @@
   background: var(--fundo-alt);
   border-radius: 6px;
 }
+
+/* ── Abas ── */
+.abas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 1px solid var(--borda);
+  border-radius: 7px;
+  overflow: hidden;
+  margin-bottom: 0.25rem;
+}
+
+.aba {
+  height: 2rem;
+  background: var(--fundo-alt);
+  border: none;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--texto-terciario);
+  font-family: inherit;
+  transition: background 0.15s, color 0.15s;
+  letter-spacing: 0.02em;
+}
+
+.aba:first-child {
+  border-right: 1px solid var(--borda);
+}
+
+.aba:hover {
+  color: var(--texto);
+  background: var(--superficie-hover);
+}
+
+.abaAtiva {
+  background: var(--acento-alpha);
+  color: var(--acento);
+}

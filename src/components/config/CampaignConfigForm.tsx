@@ -39,6 +39,7 @@ export function CampaignConfigForm({ config, onChange }: CampaignConfigFormProps
             ...novos[i],
             bonificacaoPercentual: defaults[i].bonificacaoPercentual,
             auxilioPercentual: defaults[i].auxilioPercentual,
+            percentualDebito: defaults[i].percentualDebito,
           };
         } else {
           novos[i] = { ...novos[i], bonificacaoPercentual: 0, auxilioPercentual: 0 };
@@ -151,8 +152,9 @@ export function CampaignConfigForm({ config, onChange }: CampaignConfigFormProps
 
         <div className={styles.lideresHeader}>
           <span className={styles.lideresColNome}>Nome</span>
-          <span className={styles.lideresColPct}>Bonific. % / Sal.</span>
+          <span className={styles.lideresColPct}>Bonific. %</span>
           <span className={styles.lideresColPct}>Auxílio %</span>
+          <span className={styles.lideresColPct}>% Déb.</span>
         </div>
 
         {Array.from({ length: localNumLideres }, (_, i) => i).map((idx) => (
@@ -187,6 +189,18 @@ export function CampaignConfigForm({ config, onChange }: CampaignConfigFormProps
                 value={localLideres[idx].auxilioPercentual || ""}
                 onChange={(e) =>
                   setLiderField(idx, "auxilioPercentual", parseFloat(e.target.value) || 0)
+                }
+              />
+              <input
+                className={`${styles.input} ${styles.inputPct}`}
+                type="number"
+                placeholder="0"
+                min={0}
+                max={100}
+                step="0.01"
+                value={localLideres[idx].percentualDebito || ""}
+                onChange={(e) =>
+                  setLiderField(idx, "percentualDebito", parseFloat(e.target.value) || 0)
                 }
               />
             </div>

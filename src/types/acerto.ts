@@ -26,6 +26,7 @@ export interface LiderAcerto {
   nome: string;
   bonificacaoPercentual: number;
   auxilioPercentual: number;
+  percentualDebito: number;
   possuiVeiculoSPA: boolean;
 }
 
@@ -35,7 +36,7 @@ export interface CaixaAcerto {
   auxilioPercentual: number;
 }
 
-const LIDER_VAZIO: LiderAcerto = { nome: "", bonificacaoPercentual: 0, auxilioPercentual: 0, possuiVeiculoSPA: false };
+const LIDER_VAZIO: LiderAcerto = { nome: "", bonificacaoPercentual: 0, auxilioPercentual: 0, percentualDebito: 0, possuiVeiculoSPA: false };
 
 export interface ConfigCampanha {
   tipoCampanha: CampanhaType;
@@ -59,7 +60,7 @@ export const CONFIG_INICIAL: ConfigCampanha = {
   tipoCampanhaOutro: "",
   numLideres: 1,
   lideres: [
-    { nome: "", bonificacaoPercentual: 14, auxilioPercentual: 2, possuiVeiculoSPA: false },
+    { nome: "", bonificacaoPercentual: 14, auxilioPercentual: 2, percentualDebito: 100, possuiVeiculoSPA: false },
     { ...LIDER_VAZIO },
     { ...LIDER_VAZIO },
     { ...LIDER_VAZIO },
