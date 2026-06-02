@@ -26,6 +26,7 @@ export interface LiderAcerto {
   nome: string;
   bonificacaoPercentual: number;
   auxilioPercentual: number;
+  possuiVeiculoSPA: boolean;
 }
 
 export interface CaixaAcerto {
@@ -34,11 +35,12 @@ export interface CaixaAcerto {
   auxilioPercentual: number;
 }
 
-const LIDER_VAZIO: LiderAcerto = { nome: "", bonificacaoPercentual: 0, auxilioPercentual: 0 };
+const LIDER_VAZIO: LiderAcerto = { nome: "", bonificacaoPercentual: 0, auxilioPercentual: 0, possuiVeiculoSPA: false };
 
 export interface ConfigCampanha {
   tipoCampanha: CampanhaType;
   tipoCampanhaOutro: string;
+  numLideres: 1 | 2 | 3 | 4;
   lideres: [LiderAcerto, LiderAcerto, LiderAcerto, LiderAcerto];
   caixa: CaixaAcerto;
   subContaCampanha: string;
@@ -55,7 +57,13 @@ export interface AcertoState {
 export const CONFIG_INICIAL: ConfigCampanha = {
   tipoCampanha: "Sonhando Alto 1",
   tipoCampanhaOutro: "",
-  lideres: [{ ...LIDER_VAZIO }, { ...LIDER_VAZIO }, { ...LIDER_VAZIO }, { ...LIDER_VAZIO }],
+  numLideres: 1,
+  lideres: [
+    { nome: "", bonificacaoPercentual: 14, auxilioPercentual: 2, possuiVeiculoSPA: false },
+    { ...LIDER_VAZIO },
+    { ...LIDER_VAZIO },
+    { ...LIDER_VAZIO },
+  ],
   caixa: { nome: "", salarioCaixa: null, auxilioPercentual: 0 },
   subContaCampanha: "",
   departamento: "",

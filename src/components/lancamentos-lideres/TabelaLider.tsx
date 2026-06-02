@@ -8,6 +8,7 @@ import { gerarLinhasLider } from "@/lib/gerarLinhasLider";
 import { calcularSaldosLider } from "@/lib/calcularSaldosLider";
 import { calcularSaldos } from "@/lib/calcularSaldos";
 import { formatarBRL } from "@/lib/parseRelatorioSaldo";
+import { MIN_COLPORTORES_POR_LIDER } from "@/config/app";
 import { ModalDetalhe } from "./ModalDetalhe";
 import type { LinhaTabela } from "@/types/lancamentoLider";
 import styles from "./TabelaLider.module.css";
@@ -23,6 +24,13 @@ export function TabelaLider() {
   const { lancamentos } = useLancamento();
   const { state } = useAcerto();
   const salarioCaixa = state.config.caixa.salarioCaixa;
+  const numLideres = state.config.numLideres;
+  const totalColportores = state.dadosImportados?.nomes.length ?? 0;
+  const minPorLider = MIN_COLPORTORES_POR_LIDER[state.config.tipoCampanha] ?? null;
+  const proporcaoInsuficiente =
+    minPorLider !== null &&
+    totalColportores > 0 &&
+    totalColportores / numLideres < minPorLider;
 
   const configs = state.config.lideres
     .filter((l) => l.nome.trim())
@@ -73,6 +81,17 @@ export function TabelaLider() {
     <div className={styles.container}>
       {modalLinha && (
         <ModalDetalhe linha={modalLinha} onFechar={() => setModalLinha(null)} />
+      )}
+
+      {proporcaoInsuficiente && (
+        <div className={styles.aviso}>
+          <em className={styles.avisoIcone}>!</em>
+          <span>
+            Proporção insuficiente: {totalColportores} colportor{totalColportores !== 1 ? "es" : ""} para{" "}
+            {numLideres} líder{numLideres !== 1 ? "es" : ""} — mínimo exigido:{" "}
+            {minPorLider} por líder ({numLideres * (minPorLider ?? 0)} total).
+          </span>
+        </div>
       )}
 
       <div className={styles.saldoHerdado}>

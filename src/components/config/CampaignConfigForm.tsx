@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import type { ConfigCampanha, CampanhaType, CampoType, LiderAcerto, CaixaAcerto } from "@/types/acerto";
-import { CAMPANHAS, CAMPOS, EXIBICAO } from "@/config/app";
+import { CAMPANHAS, CAMPOS, DEFAULTS_LIDERES, TOTAIS_ESPERADOS } from "@/config/app";
 import styles from "./CampaignConfigForm.module.css";
 
 interface CampaignConfigFormProps {
@@ -15,8 +15,11 @@ export function CampaignConfigForm({ config, onChange }: CampaignConfigFormProps
     () => config.lideres.map((l) => ({ ...l })) as ConfigCampanha["lideres"]
   );
   const [localCaixa, setLocalCaixa] = useState<CaixaAcerto>(() => ({ ...config.caixa }));
+  const [localNumLideres, setLocalNumLideres] = useState<1 | 2 | 3 | 4>(() => (config.numLideres ?? 1) as 1 | 2 | 3 | 4);
+  const [erroValidacao, setErroValidacao] = useState<string | null>(null);
 
-  const setLiderField = (idx: number, campo: keyof LiderAcerto, valor: string | number) => {
+  const setLiderField = (idx: number, campo: keyof LiderAcerto, valor: string | number | boolean) => {
+    setErroValidacao(null);
     setLocalLideres((prev) => {
       const novos = prev.map((l) => ({ ...l })) as ConfigCampanha["lideres"];
       novos[idx] = { ...novos[idx], [campo]: valor };
@@ -24,8 +27,45 @@ export function CampaignConfigForm({ config, onChange }: CampaignConfigFormProps
     });
   };
 
+  const handleNumLideresChange = (n: 1 | 2 | 3 | 4) => {
+    setLocalNumLideres(n);
+    setErroValidacao(null);
+    const defaults = DEFAULTS_LIDERES[n];
+    setLocalLideres((prev) => {
+      const novos = prev.map((l) => ({ ...l })) as ConfigCampanha["lideres"];
+      for (let i = 0; i < 4; i++) {
+        if (i < defaults.length) {
+          novos[i] = {
+            ...novos[i],
+            bonificacaoPercentual: defaults[i].bonificacaoPercentual,
+            auxilioPercentual: defaults[i].auxilioPercentual,
+          };
+        } else {
+          novos[i] = { ...novos[i], bonificacaoPercentual: 0, auxilioPercentual: 0 };
+        }
+      }
+      return novos;
+    });
+  };
+
   const salvarLideres = () => {
-    onChange({ lideres: localLideres, caixa: localCaixa });
+    const totais = TOTAIS_ESPERADOS[localNumLideres];
+    if (totais) {
+      const ativos = Array.from({ length: localNumLideres }, (_, i) => localLideres[i]);
+      const somaBonif = Math.round(ativos.reduce((s, l) => s + l.bonificacaoPercentual, 0) * 100) / 100;
+      const somaAux   = Math.round((ativos.reduce((s, l) => s + l.auxilioPercentual, 0) + localCaixa.auxilioPercentual) * 100) / 100;
+      const erros: string[] = [];
+      if (somaBonif !== totais.bonificacao)
+        erros.push(`Manutenção: soma ${somaBonif}%, esperado ${totais.bonificacao}%`);
+      if (somaAux !== totais.auxilio)
+        erros.push(`Auxílio: soma ${somaAux}%, esperado ${totais.auxilio}%`);
+      if (erros.length > 0) {
+        setErroValidacao(erros.join(" — "));
+        return;
+      }
+    }
+    setErroValidacao(null);
+    onChange({ lideres: localLideres, caixa: localCaixa, numLideres: localNumLideres });
   };
 
   return (
@@ -94,46 +134,83 @@ export function CampaignConfigForm({ config, onChange }: CampaignConfigFormProps
       {/* Líderes */}
       <fieldset className={styles.fieldset}>
         <legend className={styles.legend}>Líderes</legend>
+
+        <div className={styles.grupo} style={{ marginBottom: "0.75rem" }}>
+          <label className={styles.label} htmlFor="numLideres">Nº de Líderes</label>
+          <select
+            id="numLideres"
+            className={styles.select}
+            value={localNumLideres}
+            onChange={(e) => handleNumLideresChange(Number(e.target.value) as 1 | 2 | 3 | 4)}
+          >
+            {[1, 2, 3, 4].map((n) => (
+              <option key={n} value={n}>{n}</option>
+            ))}
+          </select>
+        </div>
+
         <div className={styles.lideresHeader}>
           <span className={styles.lideresColNome}>Nome</span>
           <span className={styles.lideresColPct}>Bonific. % / Sal.</span>
           <span className={styles.lideresColPct}>Auxílio %</span>
         </div>
-        {Array.from({ length: EXIBICAO.numLideres }, (_, i) => i).map((idx) => (
-          <div key={idx} className={styles.liderRow}>
-            <input
-              className={styles.input}
-              type="text"
-              placeholder={`${idx + 1}º líder${idx >= EXIBICAO.liderOpcionalAPartirDe ? " (opcional)" : ""}`}
-              value={localLideres[idx].nome}
-              onChange={(e) => setLiderField(idx, "nome", e.target.value)}
-            />
-            <input
-              className={`${styles.input} ${styles.inputPct}`}
-              type="number"
-              placeholder="0"
-              min={0}
-              max={100}
-              step="0.01"
-              value={localLideres[idx].bonificacaoPercentual || ""}
-              onChange={(e) =>
-                setLiderField(idx, "bonificacaoPercentual", parseFloat(e.target.value) || 0)
-              }
-            />
-            <input
-              className={`${styles.input} ${styles.inputPct}`}
-              type="number"
-              placeholder="0"
-              min={0}
-              max={100}
-              step="0.01"
-              value={localLideres[idx].auxilioPercentual || ""}
-              onChange={(e) =>
-                setLiderField(idx, "auxilioPercentual", parseFloat(e.target.value) || 0)
-              }
-            />
+
+        {Array.from({ length: localNumLideres }, (_, i) => i).map((idx) => (
+          <div key={idx}>
+            <div className={styles.liderRow}>
+              <input
+                className={styles.input}
+                type="text"
+                placeholder={`${idx + 1}º líder`}
+                value={localLideres[idx].nome}
+                onChange={(e) => setLiderField(idx, "nome", e.target.value)}
+              />
+              <input
+                className={`${styles.input} ${styles.inputPct}`}
+                type="number"
+                placeholder="0"
+                min={0}
+                max={100}
+                step="0.01"
+                value={localLideres[idx].bonificacaoPercentual || ""}
+                onChange={(e) =>
+                  setLiderField(idx, "bonificacaoPercentual", parseFloat(e.target.value) || 0)
+                }
+              />
+              <input
+                className={`${styles.input} ${styles.inputPct}`}
+                type="number"
+                placeholder="0"
+                min={0}
+                max={100}
+                step="0.01"
+                value={localLideres[idx].auxilioPercentual || ""}
+                onChange={(e) =>
+                  setLiderField(idx, "auxilioPercentual", parseFloat(e.target.value) || 0)
+                }
+              />
+            </div>
+            {idx === 0 && (
+              <div className={styles.checkboxRow}>
+                <input
+                  id="veiculoSPA"
+                  type="checkbox"
+                  className={styles.checkbox}
+                  checked={localLideres[0].possuiVeiculoSPA}
+                  onChange={(e) => setLiderField(0, "possuiVeiculoSPA", e.target.checked)}
+                />
+                <label htmlFor="veiculoSPA" className={styles.checkboxLabel}>
+                  Possui veículo no SPA?
+                </label>
+              </div>
+            )}
           </div>
         ))}
+
+        {erroValidacao && (
+          <div className={styles.erroValidacao}>{erroValidacao}</div>
+        )}
+
         <div className={styles.liderSeparador}>
           <span>Caixa</span>
         </div>

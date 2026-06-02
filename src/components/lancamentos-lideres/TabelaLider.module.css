@@ -5,6 +5,26 @@
   overflow: hidden;
 }
 
+/* ── Aviso proporção ── */
+.aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: rgba(202, 138, 4, 0.08);
+  border-bottom: 1px solid rgba(202, 138, 4, 0.35);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #92400e;
+  line-height: 1.4;
+}
+
+.avisoIcone {
+  flex-shrink: 0;
+  font-style: normal;
+  font-weight: 700;
+}
+
 /* ── Saldo herdado ── */
 .saldoHerdado {
   display: flex;

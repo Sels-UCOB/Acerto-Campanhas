@@ -1,8 +1,6 @@
 import type { CampanhaType, CampoType, ConfigCampanha } from "@/types/acerto";
 
 // ─── Opções de campanha ───────────────────────────────────────────────────────
-// Ajuste esta lista para incluir / remover tipos de campanha disponíveis.
-// O último item "Outro" abre um campo de texto livre.
 export const CAMPANHAS: CampanhaType[] = [
   "Verão",
   "Inverno",
@@ -12,8 +10,6 @@ export const CAMPANHAS: CampanhaType[] = [
 ];
 
 // ─── Opções de campo ──────────────────────────────────────────────────────────
-// Siglas dos campos disponíveis para seleção.
-// O último item "Outro" abre um campo de texto livre.
 export const CAMPOS: CampoType[] = [
   "ALM",
   "AOM",
@@ -25,14 +21,59 @@ export const CAMPOS: CampoType[] = [
   "Outro",
 ];
 
+// ─── Defaults de bonificação/auxílio por nº de líderes ───────────────────────
+export interface DefaultLider {
+  bonificacaoPercentual: number;
+  auxilioPercentual: number;
+}
+
+export const DEFAULTS_LIDERES: Record<1 | 2 | 3 | 4, DefaultLider[]> = {
+  1: [{ bonificacaoPercentual: 14, auxilioPercentual: 2 }],
+  2: [
+    { bonificacaoPercentual: 11, auxilioPercentual: 3 },
+    { bonificacaoPercentual: 7,  auxilioPercentual: 0 },
+  ],
+  3: [
+    { bonificacaoPercentual: 9, auxilioPercentual: 4 },
+    { bonificacaoPercentual: 6, auxilioPercentual: 0 },
+    { bonificacaoPercentual: 5, auxilioPercentual: 0 },
+  ],
+  4: [
+    { bonificacaoPercentual: 0, auxilioPercentual: 0 },
+    { bonificacaoPercentual: 0, auxilioPercentual: 0 },
+    { bonificacaoPercentual: 0, auxilioPercentual: 0 },
+    { bonificacaoPercentual: 0, auxilioPercentual: 0 },
+  ],
+};
+
+// ─── Totais esperados para validação (4 líderes = sem validação) ──────────────
+export const TOTAIS_ESPERADOS: Partial<Record<1 | 2 | 3 | 4, { bonificacao: number; auxilio: number }>> = {
+  1: { bonificacao: 14, auxilio: 2 },
+  2: { bonificacao: 18, auxilio: 3 },
+  3: { bonificacao: 20, auxilio: 4 },
+};
+
+// ─── Mínimo de colportores por líder por tipo de campanha ─────────────────────
+export const MIN_COLPORTORES_POR_LIDER: Partial<Record<CampanhaType, number>> = {
+  "Verão":         20,
+  "Sonhando Alto 1": 20,
+  "Sonhando Alto 2": 20,
+  "Inverno":       25,
+};
+
 // ─── Valores padrão do formulário ─────────────────────────────────────────────
-// Estes valores são usados ao abrir o sistema ou ao resetar o formulário.
-const LIDER_VAZIO = { nome: "", bonificacaoPercentual: 0, auxilioPercentual: 0 } as const;
+const LIDER_VAZIO = { nome: "", bonificacaoPercentual: 0, auxilioPercentual: 0, possuiVeiculoSPA: false } as const;
 
 export const CONFIG_PADRAO: ConfigCampanha = {
   tipoCampanha: "Sonhando Alto 1",
   tipoCampanhaOutro: "",
-  lideres: [{ ...LIDER_VAZIO }, { ...LIDER_VAZIO }, { ...LIDER_VAZIO }, { ...LIDER_VAZIO }],
+  numLideres: 1,
+  lideres: [
+    { nome: "", bonificacaoPercentual: 14, auxilioPercentual: 2, possuiVeiculoSPA: false },
+    { ...LIDER_VAZIO },
+    { ...LIDER_VAZIO },
+    { ...LIDER_VAZIO },
+  ],
   caixa: { nome: "", salarioCaixa: null, auxilioPercentual: 0 },
   subContaCampanha: "",
   departamento: "",
@@ -42,14 +83,8 @@ export const CONFIG_PADRAO: ConfigCampanha = {
 
 // ─── Configurações de exibição ────────────────────────────────────────────────
 export const EXIBICAO = {
-  // Quantos colportores mostrar na preview antes do botão "Ver todos"
   previewMaxLinhas: 5,
-
-  // Número de líderes disponíveis no formulário
   numLideres: 4,
-
-  // Índice a partir do qual os líderes são marcados como (opcional)
-  liderOpcionalAPartirDe: 1,
 };
 
 // ─── Identidade da organização ────────────────────────────────────────────────
