@@ -281,7 +281,7 @@ export function gerarCSVContabil(p: ParamsCSV): string {
 
     if (saldoCaixa !== 0) {
       const hist = `Salário Caixa ${caixa.nome}`;
-      const subCaixaLucro = lcMap.get(caixa.nome)?.subcontaLucro ?? "";
+      const subCaixaLucro = p.tipos.find((t) => t.nome === "Lucro")?.subconta ?? "";
 
       // 2.8a – Débito na campanha
       linhas.push({
