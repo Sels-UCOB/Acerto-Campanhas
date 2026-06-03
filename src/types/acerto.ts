@@ -34,6 +34,7 @@ export interface CaixaAcerto {
   nome: string;
   salarioCaixa: number | null;
   auxilioPercentual: number;
+  percentualDiferencaCaixa: number;
 }
 
 const LIDER_VAZIO: LiderAcerto = { nome: "", bonificacaoPercentual: 0, auxilioPercentual: 0, percentualDebito: 0, possuiVeiculoSPA: false };
@@ -65,7 +66,7 @@ export const CONFIG_INICIAL: ConfigCampanha = {
     { ...LIDER_VAZIO },
     { ...LIDER_VAZIO },
   ],
-  caixa: { nome: "", salarioCaixa: null, auxilioPercentual: 0 },
+  caixa: { nome: "", salarioCaixa: null, auxilioPercentual: 0, percentualDiferencaCaixa: 0 },
   subContaCampanha: "",
   departamento: "",
   campo: "AOM",

@@ -75,7 +75,7 @@ export const CONFIG_PADRAO: ConfigCampanha = {
     { ...LIDER_VAZIO },
     { ...LIDER_VAZIO },
   ],
-  caixa: { nome: "", salarioCaixa: null, auxilioPercentual: 0 },
+  caixa: { nome: "", salarioCaixa: null, auxilioPercentual: 0, percentualDiferencaCaixa: 0 },
   subContaCampanha: "",
   departamento: "",
   campo: "AOM",

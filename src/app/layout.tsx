@@ -3,6 +3,7 @@ import { AcertoProvider } from "@/context/AcertoContext";
 import { ConfiguracaoProvider } from "@/context/ConfiguracaoContext";
 import { LancamentoProvider } from "@/context/LancamentoContext";
 import { LancamentoLiderProvider } from "@/context/LancamentoLiderContext";
+import { DebitosProvider } from "@/context/DebitosContext";
 import { AppShell } from "@/components/shell/AppShell";
 import "./globals.css";
 
@@ -19,7 +20,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ConfiguracaoProvider>
             <LancamentoProvider>
               <LancamentoLiderProvider>
-                <AppShell>{children}</AppShell>
+                <DebitosProvider>
+                  <AppShell>{children}</AppShell>
+                </DebitosProvider>
               </LancamentoLiderProvider>
             </LancamentoProvider>
           </ConfiguracaoProvider>

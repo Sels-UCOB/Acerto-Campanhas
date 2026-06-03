@@ -1,14 +1,21 @@
 "use client";
 
-import React from "react";
+import React, { useState, useCallback } from "react";
 import { useDebitos } from "@/context/DebitosContext";
 import { calcularTotalDevedores } from "@/lib/calcularDebitos";
 import { formatarBRL } from "@/lib/parseRelatorioSaldo";
 import styles from "./TabelaDevedores.module.css";
 
 export function TabelaDevedores() {
-  const { devedores, addDevedor, updateDevedor, removeDevedor } = useDebitos();
+  const { devedores, addDevedor, updateDevedor, removeDevedor, salvar } = useDebitos();
   const total = calcularTotalDevedores(devedores);
+  const [salvo, setSalvo] = useState(false);
+
+  const handleSalvar = useCallback(() => {
+    salvar();
+    setSalvo(true);
+    setTimeout(() => setSalvo(false), 2000);
+  }, [salvar]);
 
   return (
     <div className={styles.container}>
@@ -63,6 +70,16 @@ export function TabelaDevedores() {
       <div className={styles.rodape}>
         <span className={styles.totalLabel}>Total débitos</span>
         <span className={styles.totalValor}>{formatarBRL(total)}</span>
+      </div>
+
+      <div className={styles.acoes}>
+        <button
+          type="button"
+          className={salvo ? styles.btnSalvoOk : styles.btnSalvar}
+          onClick={handleSalvar}
+        >
+          {salvo ? "Salvo ✓" : "Salvar alterações"}
+        </button>
       </div>
     </div>
   );

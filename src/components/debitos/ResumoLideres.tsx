@@ -18,6 +18,11 @@ export function ResumoLideres() {
     addDebitoAdicional,
     updateDebitoAdicional,
     removeDebitoAdicional,
+    gastosCaixa,
+    setGastosCaixa,
+    addDebitoAdicionalCaixa,
+    updateDebitoAdicionalCaixa,
+    removeDebitoAdicionalCaixa,
   } = useDebitos();
 
   const [expandidos, setExpandidos] = useState<Record<number, boolean>>({});
@@ -29,8 +34,10 @@ export function ResumoLideres() {
   const lideres = Array.from({ length: numLideres }, (_, i) => state.config.lideres[i]).filter(
     (l) => l.nome.trim()
   );
+  const caixa = state.config.caixa;
+  const temCaixa = caixa.nome.trim().length > 0;
 
-  if (lideres.length === 0) {
+  if (lideres.length === 0 && !temCaixa) {
     return (
       <div className={styles.vazio}>
         <p>Nenhum líder configurado.</p>
@@ -41,10 +48,20 @@ export function ResumoLideres() {
   const toggleExpandido = (idx: number) =>
     setExpandidos((prev) => ({ ...prev, [idx]: !prev[idx] }));
 
+  const salarioCaixa = caixa.salarioCaixa ?? 0;
+  const auxilioCaixa = Math.round((caixa.auxilioPercentual / 100) * compraBonificada * 100) / 100;
+  const totalBrutoCaixa = Math.round((salarioCaixa + auxilioCaixa) * 100) / 100;
+  const totalGastosCaixa = Math.round(
+    (gastosCaixa.gastos + gastosCaixa.debitosAdicionais.reduce((s, d) => s + d.valor, 0)) * 100
+  ) / 100;
+  const saldoCaixa = Math.round((totalBrutoCaixa - totalGastosCaixa) * 100) / 100;
+
   return (
     <div className={styles.container}>
       <h3 className={styles.secaoTitulo}>Resumo dos Líderes</h3>
       <div className={styles.cards}>
+
+        {/* Cards dos líderes */}
         {lideres.map((lider, idx) => {
           const resumo = calcularResumoLider({
             lider,
@@ -212,6 +229,124 @@ export function ResumoLideres() {
             </div>
           );
         })}
+
+        {/* Card do Caixa */}
+        {temCaixa && (
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <span className={styles.cardNome}>{caixa.nome}</span>
+              <span className={styles.cardTag}>Caixa</span>
+            </div>
+
+            {/* Salário + Auxílio — sempre visível no topo */}
+            <div className={styles.resumoFinanceiro}>
+              {salarioCaixa > 0 && (
+                <div className={styles.rfLinha}>
+                  <span>Salário</span>
+                  <span className={styles.rfPositivo}>{formatarBRL(salarioCaixa)}</span>
+                </div>
+              )}
+              {auxilioCaixa > 0 && (
+                <div className={styles.rfLinha}>
+                  <span>Auxílio</span>
+                  <span className={styles.rfPositivo}>{formatarBRL(auxilioCaixa)}</span>
+                </div>
+              )}
+              <div className={styles.rfLinha}>
+                <span style={{ fontWeight: 700 }}>Total bruto</span>
+                <span className={styles.rfPositivo} style={{ fontWeight: 700 }}>
+                  {formatarBRL(totalBrutoCaixa)}
+                </span>
+              </div>
+            </div>
+
+            <div
+              style={{
+                height: 1,
+                background: "var(--borda)",
+                margin: "0.5rem 0",
+              }}
+            />
+
+            {/* Gastos do caixa */}
+            <div className={styles.secao}>
+              <label className={styles.secaoLabel}>Gastos do caixa</label>
+              <input
+                type="number"
+                className={styles.input}
+                placeholder="R$ 0,00"
+                min={0}
+                step="0.01"
+                value={gastosCaixa.gastos || ""}
+                onChange={(e) => setGastosCaixa(parseFloat(e.target.value) || 0)}
+              />
+            </div>
+
+            {/* Outros gastos */}
+            <div className={styles.secao}>
+              <div className={styles.debitosAdicHeader}>
+                <span className={styles.secaoLabel}>Outros gastos</span>
+                <button
+                  type="button"
+                  className={styles.btnAddAdic}
+                  onClick={addDebitoAdicionalCaixa}
+                >
+                  + Adicionar
+                </button>
+              </div>
+              {gastosCaixa.debitosAdicionais.map((d) => (
+                <div key={d.id} className={styles.debitoAdicLinha}>
+                  <input
+                    type="text"
+                    className={styles.inputDesc}
+                    placeholder="Descrição"
+                    value={d.descricao}
+                    onChange={(e) =>
+                      updateDebitoAdicionalCaixa(d.id, { descricao: e.target.value })
+                    }
+                  />
+                  <input
+                    type="number"
+                    className={styles.inputValorAdic}
+                    placeholder="0,00"
+                    min={0}
+                    step="0.01"
+                    value={d.valor || ""}
+                    onChange={(e) =>
+                      updateDebitoAdicionalCaixa(d.id, {
+                        valor: parseFloat(e.target.value) || 0,
+                      })
+                    }
+                  />
+                  <button
+                    type="button"
+                    className={styles.btnRemoverAdic}
+                    onClick={() => removeDebitoAdicionalCaixa(d.id)}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Total gastos + Saldo */}
+            <div className={styles.totalDebitos}>
+              <span>Total de gastos</span>
+              <span className={styles.totalDebitosValor}>{formatarBRL(totalGastosCaixa)}</span>
+            </div>
+
+            <div className={styles.rfSaldo}>
+              <span>Saldo final</span>
+              <span
+                className={`${styles.rfSaldoValor} ${
+                  saldoCaixa < 0 ? styles.rfNegativo : styles.rfPositivo
+                }`}
+              >
+                {formatarBRL(saldoCaixa)}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

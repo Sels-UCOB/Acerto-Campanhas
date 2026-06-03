@@ -14,6 +14,7 @@ interface AcertoContextValue {
   state: AcertoState;
   setDadosImportados: (dados: DadosImportados) => void;
   setConfig: (config: Partial<ConfigCampanha>) => void;
+  updateLiderPercentual: (idx: number, pct: number) => void;
   resetDados: () => void;
 }
 
@@ -33,12 +34,21 @@ export function AcertoProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, config: { ...s.config, ...parcial } }));
   }, []);
 
+  const updateLiderPercentual = useCallback((idx: number, pct: number) => {
+    setState((s) => {
+      const lideres = s.config.lideres.map((l, i) =>
+        i === idx ? { ...l, percentualDebito: pct } : l
+      ) as ConfigCampanha["lideres"];
+      return { ...s, config: { ...s.config, lideres } };
+    });
+  }, []);
+
   const resetDados = useCallback(() => {
     setState((s) => ({ ...s, dadosImportados: null }));
   }, []);
 
   return (
-    <AcertoContext.Provider value={{ state, setDadosImportados, setConfig, resetDados }}>
+    <AcertoContext.Provider value={{ state, setDadosImportados, setConfig, updateLiderPercentual, resetDados }}>
       {children}
     </AcertoContext.Provider>
   );

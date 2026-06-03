@@ -39,6 +39,9 @@
   padding: 0.5rem 1rem;
   background: var(--fundo-alt);
   border-bottom: 2px solid var(--borda);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .cardNome {
@@ -47,6 +50,17 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--acento);
+}
+
+.cardTag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--texto-terciario);
+  background: var(--borda);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
 }
 
 /* ── Seções internas ── */

@@ -6,12 +6,8 @@ import { useAcerto } from "@/context/AcertoContext";
 import styles from "./PainelConfig.module.css";
 
 export function PainelConfig() {
-  const {
-    cartaBolsa,
-    jurosCampanha,
-    updateCartaBolsa,
-    setJurosCampanha,
-  } = useLancamentoLider();
+  const { cartaBolsa, jurosCampanha, updateCartaBolsa, setJurosCampanha } =
+    useLancamentoLider();
   const { state } = useAcerto();
   const lideres = state.config.lideres.filter((l) => l.nome.trim());
 
