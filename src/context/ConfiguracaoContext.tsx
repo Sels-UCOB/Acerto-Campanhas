@@ -64,10 +64,10 @@ export function ConfiguracaoProvider({ children }: { children: ReactNode }) {
 
   const initLideres = useCallback((nomes: string[]) => {
     setLideres((prev) => {
-      if (prev.length > 0) return prev;
-      return nomes
-        .filter(Boolean)
-        .map((nome) => ({ id: genId(), nome, subcontaLider: "", subcontaLucro: "" }));
+      const existentes = new Set(prev.map((l) => l.nome));
+      const novos = nomes.filter(Boolean).filter((n) => !existentes.has(n));
+      if (novos.length === 0) return prev;
+      return [...prev, ...novos.map((nome) => ({ id: genId(), nome, subcontaLider: "", subcontaLucro: "" }))];
     });
   }, []);
 

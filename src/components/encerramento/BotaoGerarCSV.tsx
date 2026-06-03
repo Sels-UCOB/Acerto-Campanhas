@@ -19,7 +19,7 @@ export function BotaoGerarCSV() {
   const { lancamentos } = useLancamento();
   const { cartaBolsa, jurosCampanha } = useLancamentoLider();
   const { devedores, gastosLideres, gastosCaixa } = useDebitos();
-  const { tipos, lideres: lideresConfig } = useConfiguracao();
+  const { tipos, campos, lideres: lideresConfig } = useConfiguracao();
 
   const [pendencias, setPendencias] = useState<Pendencia[]>([]);
   const [erroGeral, setErroGeral] = useState<string | null>(null);
@@ -63,6 +63,7 @@ export function BotaoGerarCSV() {
       lancamentos,
       tipos,
       lideresConfig,
+      campos,
       config: state.config,
       cartaBolsa,
       jurosCampanha,

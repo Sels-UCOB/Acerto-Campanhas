@@ -12,8 +12,10 @@ export function Lideres() {
   const [confirmarId, setConfirmarId] = useState<string | null>(null);
 
   useEffect(() => {
-    initLideres(state.config.lideres.filter((l) => l.nome).map((l) => l.nome));
-  }, [initLideres, state.config.lideres]);
+    const nomes = state.config.lideres.filter((l) => l.nome).map((l) => l.nome);
+    if (state.config.caixa.nome.trim()) nomes.push(state.config.caixa.nome);
+    initLideres(nomes);
+  }, [initLideres, state.config.lideres, state.config.caixa.nome]);
 
   const naoConfigurados = lideres.filter(
     (l) => !l.subcontaLider.trim() || !l.subcontaLucro.trim()

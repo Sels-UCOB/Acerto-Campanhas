@@ -1,5 +1,5 @@
 import type { Lancamento } from "@/types/lancamento";
-import type { TipoLancamento, LiderConfig } from "@/types/configuracao";
+import type { TipoLancamento, LiderConfig, Campo } from "@/types/configuracao";
 import type { ConfigCampanha, DadosImportados, LiderAcerto } from "@/types/acerto";
 import type { CartaBolsa } from "@/types/lancamentoLider";
 import type { DevedorColportor, GastosLider } from "@/types/debitos";
@@ -12,6 +12,7 @@ export interface ParamsCSV {
   lancamentos: Lancamento[];
   tipos: TipoLancamento[];
   lideresConfig: LiderConfig[];
+  campos: Campo[];
   config: ConfigCampanha;
   cartaBolsa: CartaBolsa;
   jurosCampanha: number | null;
@@ -87,6 +88,7 @@ export function gerarCSVContabil(p: ParamsCSV): string {
   const campo = config.campo === "Outro" ? config.campoOutro : config.campo;
   const ano = new Date().getFullYear();
   const numLideres = config.numLideres;
+  const codigoCampo = p.campos.find((c) => c.nome === campo)?.codigo ?? "";
 
   /** Contas iniciadas em "2" sempre departamento 139811; demais usam configuração */
   function depto(conta: string): string {
@@ -117,7 +119,16 @@ export function gerarCSVContabil(p: ParamsCSV): string {
     const tipo = tipoMap.get(l.tipoLancamentoId);
     if (!tipo || !tipo.conta.trim()) continue;
 
-    const hist = l.historico.trim() ? `${tipo.nome} - ${l.historico}` : tipo.nome;
+    let hist: string;
+    if (tipo.nome === "Lucro") {
+      hist = `${l.historico} - Lucro ${campanha} ${campo} ${ano}`;
+    } else if (tipo.nome === "FPC Campo") {
+      hist = `${codigoCampo} - FPC Campo - ${l.historico}`;
+    } else if (tipo.nome === "FPC UCOB") {
+      hist = `141111 - FPC UCOB - ${l.historico}`;
+    } else {
+      hist = l.historico.trim() ? `${tipo.nome} - ${l.historico}` : tipo.nome;
+    }
     addPar(tipo.conta, tipo.subconta, l.valor, hist);
   }
 
@@ -208,7 +219,7 @@ export function gerarCSVContabil(p: ParamsCSV): string {
     for (const dev of p.devedores) {
       const valor = arred((pct / 100) * dev.valorDebito);
       if (valor === 0) continue;
-      linhas.push(mk("2134002", subLucro, valor, `Débito Colportor ${pct}% paga pelo líder - ${dev.nome}`));
+      linhas.push(mk("2134002", subLucro, valor, `Débito ${pct}% - ${dev.nome}`));
     }
   }
 
@@ -270,7 +281,7 @@ export function gerarCSVContabil(p: ParamsCSV): string {
 
     if (saldoCaixa !== 0) {
       const hist = `Salário Caixa ${caixa.nome}`;
-      const subCaixaLider = lcMap.get(caixa.nome)?.subcontaLider ?? "";
+      const subCaixaLucro = lcMap.get(caixa.nome)?.subcontaLucro ?? "";
 
       // 2.8a – Débito na campanha
       linhas.push({
@@ -282,7 +293,7 @@ export function gerarCSVContabil(p: ParamsCSV): string {
       });
 
       // 2.8b – Crédito do caixa: inverso do saldoCaixa (debitoColportores = 0)
-      linhas.push(mk("2134002", subCaixaLider, -saldoCaixa, hist));
+      linhas.push(mk("2134002", subCaixaLucro, -saldoCaixa, hist));
     }
   }
 
