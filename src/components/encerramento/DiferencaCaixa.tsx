@@ -23,6 +23,7 @@ export function DiferencaCaixa() {
 
   const compraBonificada = state.dadosImportados?.bonificado ?? 0;
   const numLideres = state.config.numLideres ?? 1;
+  const salarioCaixa = state.config.caixa.salarioCaixa ?? 0;
 
   const calculo = useMemo(() => {
     const saldos = calcularSaldos(lancamentos);
@@ -30,7 +31,7 @@ export function DiferencaCaixa() {
 
     const fpc = arred(compraBonificada * FPC_PERCENTUAL);
     const juros = jurosCampanha ?? 0;
-    const base = arred(saldoInicial - fpc + juros);
+    const base = arred(saldoInicial + salarioCaixa - fpc + juros);
 
     const totalDevedores = calcularTotalDevedores(devedores);
     const lideres = Array.from({ length: numLideres }, (_, i) => state.config.lideres[i]).filter(
@@ -57,21 +58,25 @@ export function DiferencaCaixa() {
         gastosCaixa.debitosAdicionais.reduce((s, d) => s + d.valor, 0)
     );
 
-    const diferenca = arred(base - totalDebitosLideres - totalDebitosCaixa);
+    const totalDebitos = arred(totalDebitosLideres + totalDebitosCaixa);
+    const diferenca = arred(totalDebitos - base);
 
     return {
       saldoInicial,
+      salarioCaixa,
       fpc,
       juros,
       base,
       totalDebitosLideres,
       totalDebitosCaixa,
+      totalDebitos,
       diferenca,
       temJuros: jurosCampanha !== null,
     };
   }, [
     lancamentos,
     compraBonificada,
+    salarioCaixa,
     jurosCampanha,
     devedores,
     gastosLideres,
@@ -87,9 +92,38 @@ export function DiferencaCaixa() {
 
       <div className={styles.bloco}>
         <div className={styles.linha}>
+          <span className={styles.desc}>Total débitos líderes</span>
+          <span className={styles.valor}>
+            {calculo.totalDebitosLideres > 0 ? formatarBRL(calculo.totalDebitosLideres) : "—"}
+          </span>
+        </div>
+        <div className={styles.linha}>
+          <span className={styles.desc}>Total débitos caixa</span>
+          <span className={styles.valor}>
+            {calculo.totalDebitosCaixa > 0 ? formatarBRL(calculo.totalDebitosCaixa) : "—"}
+          </span>
+        </div>
+        <div className={`${styles.linha} ${styles.subtotal}`}>
+          <span className={styles.desc}>Total débitos</span>
+          <span className={styles.valor}>{formatarBRL(calculo.totalDebitos)}</span>
+        </div>
+      </div>
+
+      <div className={styles.separador} />
+
+      <div className={styles.bloco}>
+        <div className={styles.linha}>
           <span className={styles.desc}>Saldo final (Lançamentos)</span>
           <span className={styles.valor}>{formatarBRL(calculo.saldoInicial)}</span>
         </div>
+        {calculo.salarioCaixa > 0 && (
+          <div className={styles.linha}>
+            <span className={styles.desc}>Salário Caixa</span>
+            <span className={`${styles.valor} ${styles.positivo}`}>
+              +{formatarBRL(calculo.salarioCaixa)}
+            </span>
+          </div>
+        )}
         <div className={styles.linha}>
           <span className={styles.desc}>2% Bonificação (FPC)</span>
           <span className={`${styles.valor} ${styles.negativo}`}>
@@ -114,27 +148,8 @@ export function DiferencaCaixa() {
           <span className={styles.desc}>
             Base {calculo.temJuros ? "(após Juros Campanha)" : "(após FPC)"}
           </span>
-          <span className={styles.valor}>{formatarBRL(calculo.base)}</span>
-        </div>
-      </div>
-
-      <div className={styles.separador} />
-
-      <div className={styles.bloco}>
-        <div className={styles.linha}>
-          <span className={styles.desc}>Total débitos líderes</span>
           <span className={`${styles.valor} ${styles.negativo}`}>
-            {calculo.totalDebitosLideres > 0
-              ? `−${formatarBRL(calculo.totalDebitosLideres)}`
-              : "—"}
-          </span>
-        </div>
-        <div className={styles.linha}>
-          <span className={styles.desc}>Total débitos caixa</span>
-          <span className={`${styles.valor} ${styles.negativo}`}>
-            {calculo.totalDebitosCaixa > 0
-              ? `−${formatarBRL(calculo.totalDebitosCaixa)}`
-              : "—"}
+            −{formatarBRL(calculo.base)}
           </span>
         </div>
       </div>
