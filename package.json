@@ -11,6 +11,7 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\""
   },
   "dependencies": {
+    "@react-pdf/renderer": "^4.5.1",
     "next": "^15.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
