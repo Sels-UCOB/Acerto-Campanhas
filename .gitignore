@@ -10,6 +10,7 @@ node_modules/
 
 # Build
 build/
+*.tsbuildinfo
 
 # OS
 .DS_Store
