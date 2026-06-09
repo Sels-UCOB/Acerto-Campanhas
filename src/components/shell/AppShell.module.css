@@ -84,6 +84,44 @@
   flex-shrink: 0;
 }
 
+/* ── Indicador do acerto ativo ───────────────── */
+.acertoAtivo {
+  padding: 0.625rem 1rem;
+  border-bottom: 1px solid var(--borda);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.acertoAtivoLabel {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--texto-terciario);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.acertoAtivoNome {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--texto);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Banner somente leitura ──────────────────── */
+.bannerReadOnly {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  background: #fff3cd;
+  border-bottom: 1px solid #ffd;
+  font-size: 0.8rem;
+  color: #856404;
+}
+
 /* ── Área de conteúdo ────────────────────────── */
 .conteudo {
   flex: 1;

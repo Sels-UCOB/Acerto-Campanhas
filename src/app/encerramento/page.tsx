@@ -6,6 +6,7 @@ import { ResumoLideresTabela } from "@/components/encerramento/ResumoLideresTabe
 import { DiferencaCaixa } from "@/components/encerramento/DiferencaCaixa";
 import { BotaoGerarCSV } from "@/components/encerramento/BotaoGerarCSV";
 import { BotoesExportarPDF } from "@/components/encerramento/BotoesExportarPDF";
+import { BotaoEncerrar } from "@/components/encerramento/BotaoEncerrar";
 import styles from "./page.module.css";
 
 export default function EncerramentoPage() {
@@ -15,6 +16,7 @@ export default function EncerramentoPage() {
         <div className={styles.paginaTitulo}>
           <h1 className={styles.titulo}>Encerramento</h1>
           <span className={styles.badge}>Resumo final</span>
+          <BotaoEncerrar />
           <BotaoGerarCSV />
           <BotoesExportarPDF />
         </div>

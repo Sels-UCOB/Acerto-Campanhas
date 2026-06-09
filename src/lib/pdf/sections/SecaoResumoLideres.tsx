@@ -4,7 +4,8 @@ import { s } from "../styles";
 import { formatarBRL } from "@/lib/parseRelatorioSaldo";
 import type { DadosPDF } from "../types";
 import type { ResumoLiderCalc } from "@/types/debitos";
-import type { LiderAcerto, DevedorColportor } from "@/types/acerto";
+import type { LiderAcerto } from "@/types/acerto";
+import type { DevedorColportor } from "@/types/debitos";
 import type { DetalheINSS, DetalheIRPF } from "@/types/lancamentoLider";
 import { calcularINSSDetalhe, calcularIRPFDetalhe } from "@/lib/calcularImpostos";
 

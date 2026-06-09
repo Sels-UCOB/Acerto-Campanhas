@@ -1,0 +1,94 @@
+.pagina {
+  min-height: 100%;
+  background: var(--fundo, #f8fafc);
+}
+
+.main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── Cabeçalho ──────────────────────────────── */
+.cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.titulo {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--texto, #1a202c);
+  margin: 0 0 0.2rem;
+}
+
+.subtitulo {
+  font-size: 0.825rem;
+  color: var(--texto-secundario, #4a5568);
+  margin: 0;
+}
+
+.btnNovo {
+  padding: 0.5rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-family: inherit;
+  background: var(--acento, #1a4f7a);
+  color: #fff;
+  border: none;
+  border-radius: var(--raio, 6px);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.12s;
+  flex-shrink: 0;
+}
+
+.btnNovo:hover { opacity: 0.88; }
+
+/* ── Resumo rápido ──────────────────────────── */
+.resumo {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.resumoItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  background: var(--superficie, #fff);
+  border: 1px solid var(--borda, #e2e8f0);
+  border-radius: var(--raio, 6px);
+  min-width: 90px;
+  gap: 0.1rem;
+}
+
+.resumoNum {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--texto, #1a202c);
+  line-height: 1;
+}
+
+.resumoAberto {
+  color: #856404;
+}
+
+.resumoEncerrado {
+  color: #1a6b24;
+}
+
+.resumoLabel {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--texto-terciario, #a0aec0);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}

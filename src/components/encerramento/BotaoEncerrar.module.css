@@ -1,0 +1,58 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 0.45rem 1rem;
+  font-size: 0.825rem;
+  font-weight: 700;
+  font-family: inherit;
+  background: #c0392b;
+  color: #fff;
+  border: none;
+  border-radius: var(--raio, 4px);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.12s;
+}
+
+.btn:hover { opacity: 0.85; }
+
+.flash {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #1a6b24;
+  animation: fadeOut 4s forwards;
+}
+
+@keyframes fadeOut {
+  0%   { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Estado encerrado */
+.encerradoBox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.35rem 0.75rem;
+  background: #d1f5d3;
+  border-radius: var(--raio, 4px);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #1a6b24;
+  white-space: nowrap;
+}
+
+.encerradoIcone {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.encerradoTexto {
+  line-height: 1;
+}

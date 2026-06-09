@@ -6,11 +6,13 @@ import React, {
   useState,
   useEffect,
   useCallback,
+  useRef,
   type ReactNode,
 } from "react";
 import type { Lancamento } from "@/types/lancamento";
 import { useAcerto } from "@/context/AcertoContext";
 import { useConfiguracao } from "@/context/ConfiguracaoContext";
+import { useAcertosManagerOptional } from "@/context/AcertosManagerContext";
 
 interface LancamentoContextValue {
   lancamentos: Lancamento[];
@@ -24,27 +26,54 @@ const LancamentoContext = createContext<LancamentoContextValue | null>(null);
 let _seq = 3000;
 const genId = () => `l${_seq++}`;
 
+const linhaVazia = (): Lancamento => ({
+  id: genId(),
+  tipoLancamentoId: "",
+  historico: "",
+  valor: null,
+  saldoManual: 0,
+});
+
 export function LancamentoProvider({ children }: { children: ReactNode }) {
   const { state } = useAcerto();
   const { tipos } = useConfiguracao();
+  const manager = useAcertosManagerOptional();
+  const activeId = manager?.activeId ?? null;
+
   const [lancamentos, setLancamentos] = useState<Lancamento[]>([]);
   const [inicializado, setInicializado] = useState(false);
+  const lastActiveIdRef = useRef<string | null | undefined>(undefined);
 
+  // Carrega/reseta quando o acerto ativo muda
+  useEffect(() => {
+    if (lastActiveIdRef.current === activeId) return;
+    lastActiveIdRef.current = activeId;
+
+    if (activeId) {
+      const saved = localStorage.getItem(`acerto_${activeId}_lancamentos`);
+      if (saved) {
+        try {
+          setLancamentos(JSON.parse(saved));
+          setInicializado(true);
+          return;
+        } catch {
+          localStorage.removeItem(`acerto_${activeId}_lancamentos`);
+        }
+      }
+    }
+    // Sem dados salvos: reinicia para deixar o efeito de inicialização agir
+    setInicializado(false);
+    setLancamentos([linhaVazia()]);
+  }, [activeId]);
+
+  // Inicializa a partir dos dados importados (quando não há dados salvos)
   useEffect(() => {
     if (inicializado) return;
 
     const tipoLucro = tipos.find((t) => t.nome === "Lucro");
     const dados = state.dadosImportados;
 
-    const linhas: Lancamento[] = [
-      {
-        id: genId(),
-        tipoLancamentoId: "",
-        historico: "",
-        valor: null,
-        saldoManual: 0,
-      },
-    ];
+    const linhas: Lancamento[] = [linhaVazia()];
 
     if (dados) {
       dados.nomes.forEach((nome, idx) => {
@@ -58,14 +87,24 @@ export function LancamentoProvider({ children }: { children: ReactNode }) {
           });
         }
       });
-      // Só trava a inicialização quando os dados já foram importados.
-      // Enquanto dadosImportados for null o efeito re-executa na próxima
-      // mudança, garantindo que os colportores sejam pré-preenchidos.
       setInicializado(true);
     }
 
     setLancamentos(linhas);
   }, [inicializado, state.dadosImportados, tipos]);
+
+  // Auto-salva
+  useEffect(() => {
+    if (!activeId || !inicializado) return;
+    localStorage.setItem(`acerto_${activeId}_lancamentos`, JSON.stringify(lancamentos));
+  }, [lancamentos, activeId, inicializado]);
+
+  // Marca "Em Aberto" ao primeiro lançamento preenchido
+  useEffect(() => {
+    if (!activeId || !manager) return;
+    const temConteudo = lancamentos.some((l) => l.valor !== null);
+    if (temConteudo) manager.marcarEmAberto(activeId);
+  }, [lancamentos, activeId, manager]);
 
   const addLancamento = useCallback(() => {
     setLancamentos((prev) => [
@@ -108,6 +147,7 @@ export function LancamentoProvider({ children }: { children: ReactNode }) {
 
 export function useLancamento() {
   const ctx = useContext(LancamentoContext);
-  if (!ctx) throw new Error("useLancamento deve ser usado dentro de LancamentoProvider");
+  if (!ctx)
+    throw new Error("useLancamento deve ser usado dentro de LancamentoProvider");
   return ctx;
 }

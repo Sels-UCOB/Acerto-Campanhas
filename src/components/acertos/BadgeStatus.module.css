@@ -1,0 +1,24 @@
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.Criado {
+  background: #f0f0f0;
+  color: #555;
+}
+
+.EmAberto {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.Encerrado {
+  background: #d1f5d3;
+  color: #1a6b24;
+}

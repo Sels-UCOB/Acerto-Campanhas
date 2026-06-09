@@ -1,0 +1,61 @@
+.barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: var(--superficie, #fff);
+  border: 1px solid var(--borda, #e2e8f0);
+  border-radius: var(--raio, 6px);
+}
+
+.grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 130px;
+}
+
+.label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--texto-secundario, #4a5568);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.select,
+.input {
+  padding: 0.38rem 0.65rem;
+  border: 1px solid var(--borda, #e2e8f0);
+  border-radius: var(--raio, 4px);
+  font-size: 0.825rem;
+  font-family: inherit;
+  background: var(--fundo, #fff);
+  color: var(--texto, #1a202c);
+  outline: none;
+  transition: border-color 0.12s;
+}
+
+.select:focus,
+.input:focus {
+  border-color: var(--acento, #1a4f7a);
+}
+
+.btnLimpar {
+  padding: 0.38rem 0.875rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: inherit;
+  background: transparent;
+  border: 1px solid var(--borda, #e2e8f0);
+  border-radius: var(--raio, 4px);
+  color: var(--texto-secundario, #4a5568);
+  cursor: pointer;
+  align-self: flex-end;
+  transition: background 0.12s;
+}
+
+.btnLimpar:hover {
+  background: var(--fundo-alt, #f7fafc);
+}
