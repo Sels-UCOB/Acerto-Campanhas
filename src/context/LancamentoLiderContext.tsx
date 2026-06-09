@@ -15,6 +15,7 @@ import { useAcertosManagerOptional } from "@/context/AcertosManagerContext";
 interface LancamentoLiderContextValue {
   cartaBolsa: CartaBolsa;
   jurosCampanha: number | null;
+  encerrado: boolean;
   updateCartaBolsa: (parcial: Partial<CartaBolsa>) => void;
   setJurosCampanha: (v: number | null) => void;
 }
@@ -27,6 +28,8 @@ const CARTA_INICIAL: CartaBolsa = { valor: 0, liderReceptor: "" };
 export function LancamentoLiderProvider({ children }: { children: ReactNode }) {
   const manager = useAcertosManagerOptional();
   const activeId = manager?.activeId ?? null;
+
+  const encerrado = manager?.activeAcerto?.status === "Encerrado";
 
   const [cartaBolsa, setCartaBolsa] = useState<CartaBolsa>(CARTA_INICIAL);
   const [jurosCampanha, setJurosCampanhaState] = useState<number | null>(null);
@@ -64,16 +67,23 @@ export function LancamentoLiderProvider({ children }: { children: ReactNode }) {
   }, [cartaBolsa, jurosCampanha, activeId]);
 
   const updateCartaBolsa = useCallback((parcial: Partial<CartaBolsa>) => {
+    if (encerrado) return;
     setCartaBolsa((prev) => ({ ...prev, ...parcial }));
-  }, []);
+  }, [encerrado]);
+
+  const setJurosCampanha = useCallback((v: number | null) => {
+    if (encerrado) return;
+    setJurosCampanhaState(v);
+  }, [encerrado]);
 
   return (
     <LancamentoLiderContext.Provider
       value={{
         cartaBolsa,
         jurosCampanha,
+        encerrado,
         updateCartaBolsa,
-        setJurosCampanha: setJurosCampanhaState,
+        setJurosCampanha,
       }}
     >
       {children}

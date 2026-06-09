@@ -16,6 +16,7 @@ import { useAcertosManagerOptional } from "@/context/AcertosManagerContext";
 
 interface LancamentoContextValue {
   lancamentos: Lancamento[];
+  encerrado: boolean;
   addLancamento: () => void;
   updateLancamento: (id: string, parcial: Partial<Omit<Lancamento, "id">>) => void;
   removeLancamento: (id: string) => void;
@@ -39,6 +40,8 @@ export function LancamentoProvider({ children }: { children: ReactNode }) {
   const { tipos } = useConfiguracao();
   const manager = useAcertosManagerOptional();
   const activeId = manager?.activeId ?? null;
+
+  const encerrado = manager?.activeAcerto?.status === "Encerrado";
 
   const [lancamentos, setLancamentos] = useState<Lancamento[]>([]);
   const [inicializado, setInicializado] = useState(false);
@@ -107,6 +110,7 @@ export function LancamentoProvider({ children }: { children: ReactNode }) {
   }, [lancamentos, activeId, manager]);
 
   const addLancamento = useCallback(() => {
+    if (encerrado) return;
     setLancamentos((prev) => [
       ...prev,
       {
@@ -117,28 +121,30 @@ export function LancamentoProvider({ children }: { children: ReactNode }) {
         saldoManual: null,
       },
     ]);
-  }, []);
+  }, [encerrado]);
 
   const updateLancamento = useCallback(
     (id: string, parcial: Partial<Omit<Lancamento, "id">>) => {
+      if (encerrado) return;
       setLancamentos((prev) =>
         prev.map((l) => (l.id === id ? { ...l, ...parcial } : l))
       );
     },
-    []
+    [encerrado]
   );
 
   const removeLancamento = useCallback((id: string) => {
+    if (encerrado) return;
     setLancamentos((prev) => {
       const idx = prev.findIndex((l) => l.id === id);
       if (idx === 0) return prev;
       return prev.filter((l) => l.id !== id);
     });
-  }, []);
+  }, [encerrado]);
 
   return (
     <LancamentoContext.Provider
-      value={{ lancamentos, addLancamento, updateLancamento, removeLancamento }}
+      value={{ lancamentos, encerrado, addLancamento, updateLancamento, removeLancamento }}
     >
       {children}
     </LancamentoContext.Provider>

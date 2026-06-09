@@ -11,7 +11,7 @@ import { NovoTipoModal } from "./NovoTipoModal";
 const inputCls = "w-full rounded-md bg-[#0F1117] border border-[#2A2F45] text-white text-sm px-2 py-1.5 focus:outline-none focus:border-[#6C63FF] transition-colors";
 
 export function TabelaLancamentos() {
-  const { lancamentos, addLancamento, updateLancamento, removeLancamento } = useLancamento();
+  const { lancamentos, encerrado, addLancamento, updateLancamento, removeLancamento } = useLancamento();
   const { tipos } = useConfiguracao();
   const [modalRowId, setModalRowId] = useState<string | null>(null);
   const saldos = calcularSaldos(lancamentos);
@@ -73,25 +73,26 @@ export function TabelaLancamentos() {
                               if (e.target.value === "__novo__") setModalRowId(lanc.id);
                               else updateLancamento(lanc.id, { tipoLancamentoId: e.target.value });
                             }}
-                            className={cn(inputCls, "min-w-36")}
+                            className={cn(inputCls, "min-w-36", encerrado && "opacity-50 cursor-not-allowed")}
+                            disabled={encerrado}
                           >
                             <option value="">— selecione —</option>
                             {tipos.map((t) => <option key={t.id} value={t.id}>{t.nome}</option>)}
-                            <option disabled>──────────</option>
-                            <option value="__novo__">+ Novo Tipo...</option>
+                            {!encerrado && <><option disabled>──────────</option><option value="__novo__">+ Novo Tipo...</option></>}
                           </select>
                         </td>
                         <td className="px-3 py-2">
-                          <input type="text" value={lanc.historico} onChange={(e) => updateLancamento(lanc.id, { historico: e.target.value })} className={inputCls} placeholder="Descrição" />
+                          <input type="text" value={lanc.historico} onChange={(e) => updateLancamento(lanc.id, { historico: e.target.value })} className={cn(inputCls, encerrado && "opacity-50 cursor-not-allowed")} placeholder="Descrição" disabled={encerrado} />
                         </td>
                         <td className="px-3 py-2">
                           <input
                             type="number"
                             value={lanc.valor ?? ""}
                             onChange={(e) => handleValor(lanc.id, e.target.value)}
-                            className={cn(inputCls, "text-right w-28", lanc.valor !== null && lanc.valor < 0 && "text-red-400")}
+                            className={cn(inputCls, "text-right w-28", lanc.valor !== null && lanc.valor < 0 && "text-red-400", encerrado && "opacity-50 cursor-not-allowed")}
                             step="0.01"
                             placeholder="+/- valor"
+                            disabled={encerrado}
                           />
                         </td>
                       </>
@@ -103,9 +104,10 @@ export function TabelaLancamentos() {
                           type="number"
                           value={lanc.saldoManual ?? ""}
                           onChange={(e) => handleSaldoManual(lanc.id, e.target.value)}
-                          className={cn(inputCls, "text-right w-28")}
+                          className={cn(inputCls, "text-right w-28", encerrado && "opacity-50 cursor-not-allowed")}
                           step="0.01"
                           placeholder="0,00"
+                          disabled={encerrado}
                         />
                       ) : (
                         <span>{formatarBRL(saldo)}</span>
@@ -113,7 +115,7 @@ export function TabelaLancamentos() {
                     </td>
 
                     <td className="px-3 py-2.5 text-center">
-                      {!isPrimeira && (
+                      {!isPrimeira && !encerrado && (
                         <button
                           type="button"
                           onClick={() => removeLancamento(lanc.id)}
@@ -133,9 +135,11 @@ export function TabelaLancamentos() {
       </div>
 
       <div className="flex items-center justify-between">
-        <button type="button" onClick={addLancamento} className="px-4 py-2 rounded-xl text-sm font-medium bg-[#2A2F45] text-[#8B8FA8] hover:text-white transition-colors">
-          + Adicionar Linha
-        </button>
+        {!encerrado && (
+          <button type="button" onClick={addLancamento} className="px-4 py-2 rounded-xl text-sm font-medium bg-[#2A2F45] text-[#8B8FA8] hover:text-white transition-colors">
+            + Adicionar Linha
+          </button>
+        )}
         <span className={cn("text-sm font-medium", saldoFinal < 0 ? "text-red-400" : "text-white")}>
           Saldo final: <strong>{formatarBRL(saldoFinal)}</strong>
         </span>

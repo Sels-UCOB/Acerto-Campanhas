@@ -8,6 +8,7 @@ import { CAMPANHAS, CAMPOS, DEFAULTS_LIDERES, TOTAIS_ESPERADOS } from "@/config/
 interface CampaignConfigFormProps {
   config: ConfigCampanha;
   onChange: (parcial: Partial<ConfigCampanha>) => void;
+  disabled?: boolean;
 }
 
 const inputCls = "w-full rounded-lg bg-[#0F1117] border border-[#2A2F45] text-white text-sm px-3 py-2 focus:outline-none focus:border-[#6C63FF] transition-colors placeholder:text-[#8B8FA8]/50";
@@ -16,7 +17,7 @@ const labelCls = "block text-xs font-semibold uppercase tracking-wider text-[#8B
 const fieldsetCls = "rounded-2xl bg-[#1A1F2E] border border-[#2A2F45] p-5 space-y-4";
 const legendCls = "text-xs font-bold uppercase tracking-wider text-[#6C63FF] px-1 mb-4 block";
 
-export function CampaignConfigForm({ config, onChange }: CampaignConfigFormProps) {
+export function CampaignConfigForm({ config, onChange, disabled = false }: CampaignConfigFormProps) {
   const [localLideres, setLocalLideres] = useState<ConfigCampanha["lideres"]>(
     () => config.lideres.map((l) => ({ ...l })) as ConfigCampanha["lideres"]
   );
@@ -66,7 +67,7 @@ export function CampaignConfigForm({ config, onChange }: CampaignConfigFormProps
   };
 
   return (
-    <div className="space-y-5">
+    <fieldset disabled={disabled} className={cn("space-y-5", disabled && "opacity-60 pointer-events-none")}>
       {/* Campanha */}
       <fieldset className={fieldsetCls}>
         <legend className={legendCls}>Campanha</legend>
@@ -191,6 +192,6 @@ export function CampaignConfigForm({ config, onChange }: CampaignConfigFormProps
           </div>
         </div>
       </fieldset>
-    </div>
+    </fieldset>
   );
 }

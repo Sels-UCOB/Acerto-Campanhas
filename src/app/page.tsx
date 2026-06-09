@@ -10,7 +10,7 @@ import type { DadosImportados } from "@/types/acerto";
 
 export default function Tela1() {
   const router = useRouter();
-  const { state, setDadosImportados, setConfig, resetDados } = useAcerto();
+  const { state, encerrado, setDadosImportados, setConfig, resetDados } = useAcerto();
   const { dadosImportados, config } = state;
 
   const podeProsseguir =
@@ -45,7 +45,9 @@ export default function Tela1() {
             </div>
           </div>
           {dadosImportados ? (
-            <PreviewImportacao dados={dadosImportados} onLimpar={resetDados} />
+            <PreviewImportacao dados={dadosImportados} onLimpar={resetDados} somenteLeitura={encerrado} />
+          ) : encerrado ? (
+            <p className="text-sm text-[#8B8FA8]">Nenhum relatório importado.</p>
           ) : (
             <XlsxUploader onImportado={(d: DadosImportados) => setDadosImportados(d)} />
           )}
@@ -62,30 +64,32 @@ export default function Tela1() {
               </p>
             </div>
           </div>
-          <CampaignConfigForm config={config} onChange={setConfig} />
+          <CampaignConfigForm config={config} onChange={setConfig} disabled={encerrado} />
         </div>
       </div>
 
       {/* Rodapé */}
-      <div className="flex items-center justify-between pt-2">
-        {!podeProsseguir && (
-          <p className="text-sm text-[#8B8FA8]">
-            {!dadosImportados
-              ? "Importe o relatório de saldo para continuar"
-              : "Preencha ao menos o 1º Líder e o Caixa para continuar"}
-          </p>
-        )}
-        <div className="ml-auto">
-          <button
-            className="px-5 py-2.5 rounded-xl bg-[#6C63FF] text-white font-medium text-sm transition-colors hover:bg-[#5A52E8] disabled:opacity-40 disabled:cursor-not-allowed"
-            disabled={!podeProsseguir}
-            type="button"
-            onClick={() => router.push("/lancamentos")}
-          >
-            Prosseguir para Lançamentos →
-          </button>
+      {!encerrado && (
+        <div className="flex items-center justify-between pt-2">
+          {!podeProsseguir && (
+            <p className="text-sm text-[#8B8FA8]">
+              {!dadosImportados
+                ? "Importe o relatório de saldo para continuar"
+                : "Preencha ao menos o 1º Líder e o Caixa para continuar"}
+            </p>
+          )}
+          <div className="ml-auto">
+            <button
+              className="px-5 py-2.5 rounded-xl bg-[#6C63FF] text-white font-medium text-sm transition-colors hover:bg-[#5A52E8] disabled:opacity-40 disabled:cursor-not-allowed"
+              disabled={!podeProsseguir}
+              type="button"
+              onClick={() => router.push("/lancamentos")}
+            >
+              Prosseguir para Lançamentos →
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

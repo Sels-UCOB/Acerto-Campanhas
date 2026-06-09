@@ -6,9 +6,9 @@ import type { DadosImportados } from "@/types/acerto";
 import { formatarBRL } from "@/lib/parseRelatorioSaldo";
 import { EXIBICAO } from "@/config/app";
 
-interface Props { dados: DadosImportados; onLimpar: () => void; }
+interface Props { dados: DadosImportados; onLimpar: () => void; somenteLeitura?: boolean; }
 
-export function PreviewImportacao({ dados, onLimpar }: Props) {
+export function PreviewImportacao({ dados, onLimpar, somenteLeitura = false }: Props) {
   const [expandido, setExpandido] = useState(false);
   const visiveis = expandido ? dados.nomes : dados.nomes.slice(0, EXIBICAO.previewMaxLinhas);
 
@@ -19,9 +19,11 @@ export function PreviewImportacao({ dados, onLimpar }: Props) {
           <span className="px-2 py-0.5 rounded-md text-xs font-medium bg-green-500/15 text-green-400 border border-green-500/20">✓ Importado</span>
           <span className="text-sm text-[#8B8FA8]">{dados.nomes.length} colportores</span>
         </div>
-        <button className="text-xs text-[#8B8FA8] hover:text-white underline underline-offset-2 transition-colors" onClick={onLimpar} type="button">
-          Trocar arquivo
-        </button>
+        {!somenteLeitura && (
+          <button className="text-xs text-[#8B8FA8] hover:text-white underline underline-offset-2 transition-colors" onClick={onLimpar} type="button">
+            Trocar arquivo
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-3">

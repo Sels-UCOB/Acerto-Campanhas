@@ -14,6 +14,7 @@ import { useAcerto } from "@/context/AcertoContext";
 import { useAcertosManagerOptional } from "@/context/AcertosManagerContext";
 
 interface DebitosContextValue {
+  encerrado: boolean;
   devedores: DevedorColportor[];
   addDevedor: () => void;
   updateDevedor: (id: string, parcial: Partial<Omit<DevedorColportor, "id">>) => void;
@@ -65,6 +66,8 @@ export function DebitosProvider({ children }: { children: ReactNode }) {
   const { state } = useAcerto();
   const manager = useAcertosManagerOptional();
   const activeId = manager?.activeId ?? null;
+
+  const encerrado = manager?.activeAcerto?.status === "Encerrado";
 
   const [devedores, setDevedores] = useState<DevedorColportor[]>([]);
   const [gastosLideres, setGastosLideresState] = useState<GastosLider[]>(
@@ -152,27 +155,31 @@ export function DebitosProvider({ children }: { children: ReactNode }) {
 
   // --- Devedores ---
   const addDevedor = useCallback(() => {
+    if (encerrado) return;
     setDevedores((prev) => [
       ...prev,
       { id: genId(), nome: "", valorDebito: 0 },
     ]);
-  }, []);
+  }, [encerrado]);
 
   const updateDevedor = useCallback(
     (id: string, parcial: Partial<Omit<DevedorColportor, "id">>) => {
+      if (encerrado) return;
       setDevedores((prev) =>
         prev.map((d) => (d.id === id ? { ...d, ...parcial } : d))
       );
     },
-    []
+    [encerrado]
   );
 
   const removeDevedor = useCallback((id: string) => {
+    if (encerrado) return;
     setDevedores((prev) => prev.filter((d) => d.id !== id));
-  }, []);
+  }, [encerrado]);
 
   // --- Gastos líderes ---
   const setGastosLider = useCallback((idx: number, gastos: number) => {
+    if (encerrado) return;
     setGastosLideresState((prev) => {
       const next = prev.map((g) => ({
         ...g,
@@ -181,9 +188,10 @@ export function DebitosProvider({ children }: { children: ReactNode }) {
       next[idx] = { ...next[idx], gastos };
       return next;
     });
-  }, []);
+  }, [encerrado]);
 
   const addDebitoAdicional = useCallback((liderIdx: number) => {
+    if (encerrado) return;
     setGastosLideresState((prev) => {
       const next = prev.map((g) => ({
         ...g,
@@ -196,10 +204,11 @@ export function DebitosProvider({ children }: { children: ReactNode }) {
       });
       return next;
     });
-  }, []);
+  }, [encerrado]);
 
   const updateDebitoAdicional = useCallback(
     (liderIdx: number, id: string, parcial: Partial<Omit<DebitoAdicional, "id">>) => {
+      if (encerrado) return;
       setGastosLideresState((prev) =>
         prev.map((g, gi) =>
           gi !== liderIdx
@@ -213,10 +222,11 @@ export function DebitosProvider({ children }: { children: ReactNode }) {
         )
       );
     },
-    []
+    [encerrado]
   );
 
   const removeDebitoAdicional = useCallback((liderIdx: number, id: string) => {
+    if (encerrado) return;
     setGastosLideresState((prev) =>
       prev.map((g, gi) =>
         gi !== liderIdx
@@ -227,14 +237,16 @@ export function DebitosProvider({ children }: { children: ReactNode }) {
             }
       )
     );
-  }, []);
+  }, [encerrado]);
 
   // --- Gastos caixa ---
   const setGastosCaixa = useCallback((gastos: number) => {
+    if (encerrado) return;
     setGastosCaixaState((prev) => ({ ...prev, gastos }));
-  }, []);
+  }, [encerrado]);
 
   const addDebitoAdicionalCaixa = useCallback(() => {
+    if (encerrado) return;
     setGastosCaixaState((prev) => ({
       ...prev,
       debitosAdicionais: [
@@ -242,10 +254,11 @@ export function DebitosProvider({ children }: { children: ReactNode }) {
         { id: genId(), descricao: "", valor: 0 },
       ],
     }));
-  }, []);
+  }, [encerrado]);
 
   const updateDebitoAdicionalCaixa = useCallback(
     (id: string, parcial: Partial<Omit<DebitoAdicional, "id">>) => {
+      if (encerrado) return;
       setGastosCaixaState((prev) => ({
         ...prev,
         debitosAdicionais: prev.debitosAdicionais.map((d) =>
@@ -253,19 +266,21 @@ export function DebitosProvider({ children }: { children: ReactNode }) {
         ),
       }));
     },
-    []
+    [encerrado]
   );
 
   const removeDebitoAdicionalCaixa = useCallback((id: string) => {
+    if (encerrado) return;
     setGastosCaixaState((prev) => ({
       ...prev,
       debitosAdicionais: prev.debitosAdicionais.filter((d) => d.id !== id),
     }));
-  }, []);
+  }, [encerrado]);
 
   return (
     <DebitosContext.Provider
       value={{
+        encerrado,
         devedores,
         addDevedor,
         updateDevedor,

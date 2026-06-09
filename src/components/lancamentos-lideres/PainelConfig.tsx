@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { cn } from "@/lib/utils";
 import { useLancamentoLider } from "@/context/LancamentoLiderContext";
 import { useAcerto } from "@/context/AcertoContext";
 
@@ -8,7 +9,7 @@ const inputCls = "w-full rounded-lg bg-[#0F1117] border border-[#2A2F45] text-wh
 const labelCls = "block text-xs font-medium text-[#8B8FA8] mb-1.5";
 
 export function PainelConfig() {
-  const { cartaBolsa, jurosCampanha, updateCartaBolsa, setJurosCampanha } = useLancamentoLider();
+  const { cartaBolsa, jurosCampanha, encerrado, updateCartaBolsa, setJurosCampanha } = useLancamentoLider();
   const { state } = useAcerto();
   const lideres = state.config.lideres.filter((l) => l.nome.trim());
 
@@ -26,17 +27,18 @@ export function PainelConfig() {
           <label className={labelCls}>Valor</label>
           <input
             type="number"
-            className={inputCls}
+            className={cn(inputCls, encerrado && "opacity-50 cursor-not-allowed")}
             value={cartaBolsa.valor === 0 ? "" : cartaBolsa.valor}
             placeholder="R$ 0,00"
             min={0}
             step="0.01"
+            disabled={encerrado}
             onChange={(e) => updateCartaBolsa({ valor: parseFloat(e.target.value) || 0 })}
           />
         </div>
         <div>
           <label className={labelCls}>Líder receptor</label>
-          <select className={inputCls} value={cartaBolsa.liderReceptor} onChange={(e) => updateCartaBolsa({ liderReceptor: e.target.value })}>
+          <select className={cn(inputCls, encerrado && "opacity-50 cursor-not-allowed")} value={cartaBolsa.liderReceptor} disabled={encerrado} onChange={(e) => updateCartaBolsa({ liderReceptor: e.target.value })}>
             <option value="">— nenhum —</option>
             {lideres.map((l) => <option key={l.nome} value={l.nome}>{l.nome}</option>)}
           </select>
@@ -51,10 +53,11 @@ export function PainelConfig() {
           <label className={labelCls}>Juros Campanha</label>
           <input
             type="number"
-            className={inputCls}
+            className={cn(inputCls, encerrado && "opacity-50 cursor-not-allowed")}
             value={jurosCampanha ?? ""}
             placeholder="+/- valor"
             step="0.01"
+            disabled={encerrado}
             onChange={(e) => setJurosCampanha(e.target.value === "" ? null : parseFloat(e.target.value))}
           />
         </div>

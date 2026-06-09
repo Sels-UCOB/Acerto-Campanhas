@@ -15,6 +15,7 @@ import { useAcertosManagerOptional } from "@/context/AcertosManagerContext";
 
 interface AcertoContextValue {
   state: AcertoState;
+  encerrado: boolean;
   setDadosImportados: (dados: DadosImportados) => void;
   setConfig: (config: Partial<ConfigCampanha>) => void;
   updateLiderPercentual: (idx: number, pct: number) => void;
@@ -28,6 +29,8 @@ const ESTADO_INICIAL: AcertoState = { dadosImportados: null, config: CONFIG_INIC
 export function AcertoProvider({ children }: { children: ReactNode }) {
   const manager = useAcertosManagerOptional();
   const activeId = manager?.activeId ?? null;
+
+  const encerrado = manager?.activeAcerto?.status === "Encerrado";
 
   const [state, setState] = useState<AcertoState>(ESTADO_INICIAL);
   const lastActiveIdRef = useRef<string | null | undefined>(undefined);
@@ -61,29 +64,33 @@ export function AcertoProvider({ children }: { children: ReactNode }) {
   }, [state, activeId]);
 
   const setDadosImportados = useCallback((dados: DadosImportados) => {
+    if (encerrado) return;
     setState((s) => ({ ...s, dadosImportados: dados }));
-  }, []);
+  }, [encerrado]);
 
   const setConfig = useCallback((parcial: Partial<ConfigCampanha>) => {
+    if (encerrado) return;
     setState((s) => ({ ...s, config: { ...s.config, ...parcial } }));
-  }, []);
+  }, [encerrado]);
 
   const updateLiderPercentual = useCallback((idx: number, pct: number) => {
+    if (encerrado) return;
     setState((s) => {
       const lideres = s.config.lideres.map((l, i) =>
         i === idx ? { ...l, percentualDebito: pct } : l
       ) as ConfigCampanha["lideres"];
       return { ...s, config: { ...s.config, lideres } };
     });
-  }, []);
+  }, [encerrado]);
 
   const resetDados = useCallback(() => {
+    if (encerrado) return;
     setState((s) => ({ ...s, dadosImportados: null }));
-  }, []);
+  }, [encerrado]);
 
   return (
     <AcertoContext.Provider
-      value={{ state, setDadosImportados, setConfig, updateLiderPercentual, resetDados }}
+      value={{ state, encerrado, setDadosImportados, setConfig, updateLiderPercentual, resetDados }}
     >
       {children}
     </AcertoContext.Provider>
