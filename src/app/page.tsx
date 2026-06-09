@@ -7,7 +7,6 @@ import { XlsxUploader } from "@/components/upload/XlsxUploader";
 import { PreviewImportacao } from "@/components/upload/PreviewImportacao";
 import { CampaignConfigForm } from "@/components/config/CampaignConfigForm";
 import type { DadosImportados } from "@/types/acerto";
-import styles from "./page.module.css";
 
 export default function Tela1() {
   const router = useRouter();
@@ -20,69 +19,65 @@ export default function Tela1() {
     config.caixa.nome.trim() !== "";
 
   return (
-    <div className={styles.pagina}>
-      <main className={styles.main}>
-        <div className={styles.paginaTitulo}>
-          <h1 className={styles.titulo}>Importação &amp; Configuração</h1>
-          <div className={styles.etapa}>
-            <span className={styles.etapaAtual}>1</span>
-            <span className={styles.etapaSep}>/</span>
-            <span className={styles.etapaTotal}>3</span>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl sm:text-2xl md:text-3xl tracking-tight text-white">Importação &amp; Configuração</h1>
+        </div>
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1E2235] border border-[#2A2F45] text-sm text-[#8B8FA8]">
+          <span className="text-[#6C63FF] font-bold">1</span>
+          <span>/</span>
+          <span>3</span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Coluna esquerda — Importação */}
+        <div className="rounded-2xl bg-[#1A1F2E] border border-[#2A2F45] p-6 space-y-4">
+          <div className="flex items-start gap-3">
+            <span className="text-xs font-bold text-[#6C63FF] bg-[#6C63FF]/10 border border-[#6C63FF]/20 px-2 py-1 rounded-lg shrink-0">01</span>
+            <div>
+              <h2 className="text-base font-semibold text-white">Relatório de Saldo</h2>
+              <p className="text-sm text-[#8B8FA8] mt-0.5">
+                Importe o arquivo Excel exportado do sistema de saldo de colportores
+              </p>
+            </div>
           </div>
-        </div>
-        <div className={styles.grid}>
-
-          {/* Coluna esquerda — Importação */}
-          <section className={styles.secao}>
-            <div className={styles.secaoHeader}>
-              <span className={styles.secaoNumero}>01</span>
-              <div>
-                <h2 className={styles.secaoTitulo}>Relatório de Saldo</h2>
-                <p className={styles.secaoDesc}>
-                  Importe o arquivo Excel exportado do sistema de saldo de colportores
-                </p>
-              </div>
-            </div>
-
-            {dadosImportados ? (
-              <PreviewImportacao
-                dados={dadosImportados}
-                onLimpar={resetDados}
-              />
-            ) : (
-              <XlsxUploader
-                onImportado={(d: DadosImportados) => setDadosImportados(d)}
-              />
-            )}
-          </section>
-
-          {/* Coluna direita — Configuração */}
-          <section className={styles.secao}>
-            <div className={styles.secaoHeader}>
-              <span className={styles.secaoNumero}>02</span>
-              <div>
-                <h2 className={styles.secaoTitulo}>Configuração da Campanha</h2>
-                <p className={styles.secaoDesc}>
-                  Preencha os dados da equipe e da campanha
-                </p>
-              </div>
-            </div>
-
-            <CampaignConfigForm config={config} onChange={setConfig} />
-          </section>
-        </div>
-
-        {/* Rodapé com ação */}
-        <div className={styles.rodape}>
-          {!podeProsseguir && (
-            <p className={styles.aviso}>
-              {!dadosImportados
-                ? "⬆ Importe o relatório de saldo para continuar"
-                : "Preencha ao menos o 1º Líder e o Caixa para continuar"}
-            </p>
+          {dadosImportados ? (
+            <PreviewImportacao dados={dadosImportados} onLimpar={resetDados} />
+          ) : (
+            <XlsxUploader onImportado={(d: DadosImportados) => setDadosImportados(d)} />
           )}
+        </div>
+
+        {/* Coluna direita — Configuração */}
+        <div className="rounded-2xl bg-[#1A1F2E] border border-[#2A2F45] p-6 space-y-4">
+          <div className="flex items-start gap-3">
+            <span className="text-xs font-bold text-[#6C63FF] bg-[#6C63FF]/10 border border-[#6C63FF]/20 px-2 py-1 rounded-lg shrink-0">02</span>
+            <div>
+              <h2 className="text-base font-semibold text-white">Configuração da Campanha</h2>
+              <p className="text-sm text-[#8B8FA8] mt-0.5">
+                Preencha os dados da equipe e da campanha
+              </p>
+            </div>
+          </div>
+          <CampaignConfigForm config={config} onChange={setConfig} />
+        </div>
+      </div>
+
+      {/* Rodapé */}
+      <div className="flex items-center justify-between pt-2">
+        {!podeProsseguir && (
+          <p className="text-sm text-[#8B8FA8]">
+            {!dadosImportados
+              ? "Importe o relatório de saldo para continuar"
+              : "Preencha ao menos o 1º Líder e o Caixa para continuar"}
+          </p>
+        )}
+        <div className="ml-auto">
           <button
-            className={styles.btnProsseguir}
+            className="px-5 py-2.5 rounded-xl bg-[#6C63FF] text-white font-medium text-sm transition-colors hover:bg-[#5A52E8] disabled:opacity-40 disabled:cursor-not-allowed"
             disabled={!podeProsseguir}
             type="button"
             onClick={() => router.push("/lancamentos")}
@@ -90,7 +85,7 @@ export default function Tela1() {
             Prosseguir para Lançamentos →
           </button>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

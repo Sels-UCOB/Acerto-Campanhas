@@ -1,85 +1,64 @@
 "use client";
 
 import React from "react";
+import { cn } from "@/lib/utils";
 import { useAcerto } from "@/context/AcertoContext";
 import { calcularPercentuaisProporcional } from "@/lib/calcularDebitos";
-import styles from "./AbaPercentualDebitos.module.css";
 
 export function AbaPercentualDebitos() {
   const { state, updateLiderPercentual, setConfig } = useAcerto();
   const numLideres = state.config.numLideres ?? 1;
-  const lideres = Array.from({ length: numLideres }, (_, i) => state.config.lideres[i]).filter(
-    (l) => l.nome.trim()
-  );
+  const lideres = Array.from({ length: numLideres }, (_, i) => state.config.lideres[i]).filter((l) => l.nome.trim());
 
   if (lideres.length === 0) {
-    return <p className={styles.vazio}>Nenhum líder configurado.</p>;
+    return <p className="text-sm text-[#8B8FA8]">Nenhum líder configurado.</p>;
   }
 
   const soma = lideres.reduce((s, l) => s + (l.percentualDebito ?? 0), 0);
   const somaErro = Math.abs(soma - 100) > 0.01;
 
-  function handleProporcional() {
+  const handleProporcional = () => {
     const proporcional = calcularPercentuaisProporcional(state.config.lideres, numLideres);
     const novasLideres = state.config.lideres.map((l, i) =>
       i < numLideres ? { ...l, percentualDebito: proporcional[i] } : l
     ) as typeof state.config.lideres;
     setConfig({ lideres: novasLideres });
-  }
+  };
+
+  const inputCls = "w-20 rounded-lg bg-[#0F1117] border border-[#2A2F45] text-white text-sm px-2 py-1.5 text-right focus:outline-none focus:border-[#6C63FF] transition-colors";
 
   return (
-    <div className={styles.container}>
-      <div className={styles.linhaHeader}>
+    <div className="space-y-2">
+      <div className="flex items-center justify-between px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#8B8FA8]">
         <span>Líder</span>
-        <span className={styles.colPct}>%</span>
+        <span>%</span>
       </div>
 
       {lideres.map((lider, idx) => (
-        <div key={lider.nome} className={styles.linha}>
-          <span className={styles.nome} title={lider.nome}>
-            {lider.nome}
-          </span>
+        <div key={lider.nome} className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg bg-[#0F1117] border border-[#2A2F45]">
+          <span className="text-sm text-white truncate" title={lider.nome}>{lider.nome}</span>
           <input
             type="number"
-            className={styles.inputPct}
-            min={0}
-            max={100}
-            step="0.1"
+            className={inputCls}
+            min={0} max={100} step="0.1"
             value={lider.percentualDebito ?? 0}
-            onChange={(e) =>
-              updateLiderPercentual(idx, parseFloat(e.target.value) || 0)
-            }
+            onChange={(e) => updateLiderPercentual(idx, parseFloat(e.target.value) || 0)}
           />
         </div>
       ))}
 
-      <div className={styles.somaLinha}>
-        <span>Soma</span>
-        <span className={somaErro ? styles.somaErro : styles.somaOk}>
+      <div className="flex items-center justify-between px-3 py-2 rounded-lg border border-[#2A2F45]">
+        <span className="text-xs font-semibold text-[#8B8FA8]">Soma</span>
+        <span className={cn("text-sm font-bold tabular-nums", somaErro ? "text-red-400" : "text-green-400")}>
           {soma.toFixed(2)}%
         </span>
       </div>
 
-      {somaErro && (
-        <p className={styles.avisoSoma}>A soma deve ser 100%.</p>
-      )}
+      {somaErro && <p className="text-xs text-red-400 px-1">A soma deve ser 100%.</p>}
 
       <button
         type="button"
-        style={{
-          marginTop: "0.5rem",
-          width: "100%",
-          height: "1.9rem",
-          fontSize: "0.75rem",
-          fontWeight: 600,
-          fontFamily: "inherit",
-          cursor: "pointer",
-          border: "1px solid var(--borda)",
-          borderRadius: "6px",
-          background: "var(--fundo-alt)",
-          color: "var(--texto-secundario)",
-          transition: "background 0.15s",
-        }}
+        className="w-full py-2 rounded-lg text-xs font-semibold text-[#8B8FA8] hover:text-white border border-[#2A2F45] hover:border-[#6C63FF]/50 transition-colors"
         onClick={handleProporcional}
       >
         Calcular proporcional

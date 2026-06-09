@@ -6,32 +6,31 @@ import { TabelaLider } from "@/components/lancamentos-lideres/TabelaLider";
 import { PainelConfig } from "@/components/lancamentos-lideres/PainelConfig";
 import { ResumoLideres } from "@/components/debitos/ResumoLideres";
 import { TabelaDevedores } from "@/components/debitos/TabelaDevedores";
-import styles from "./page.module.css";
 
 export default function LancamentosLideresPage() {
   return (
-    <div className={styles.pagina}>
-      <main className={styles.main}>
-        <div className={styles.paginaTitulo}>
-          <h1 className={styles.titulo}>Lançamentos — Líderes</h1>
-          <div className={styles.etapa}>
-            <span className={styles.etapaAtual}>3</span>
-            <span className={styles.etapaSep}>/</span>
-            <span className={styles.etapaTotal}>3</span>
-          </div>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl sm:text-2xl md:text-3xl tracking-tight text-white">Lançamentos — Líderes</h1>
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1E2235] border border-[#2A2F45] text-sm text-[#8B8FA8]">
+          <span className="text-[#6C63FF] font-bold">3</span>
+          <span>/</span>
+          <span>3</span>
         </div>
-        <CabecalhoLider />
-        <div className={styles.mainGrid}>
-          <div className={styles.colunaConteudo}>
-            <TabelaLider />
-            <ResumoLideres />
-          </div>
-          <div className={styles.colunaSide}>
-            <PainelConfig />
-            <TabelaDevedores />
-          </div>
+      </div>
+
+      <CabecalhoLider />
+
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-6">
+        <div className="space-y-6">
+          <TabelaLider />
+          <ResumoLideres />
         </div>
-      </main>
+        <div className="space-y-6">
+          <PainelConfig />
+          <TabelaDevedores />
+        </div>
+      </div>
     </div>
   );
 }

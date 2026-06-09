@@ -11,11 +11,15 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Acerto de Colportagem",
   description: "Sistema de acerto para campanhas de colportagem",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" className="dark">
       <body>
         <AcertosManagerProvider>
           <AcertoProvider>

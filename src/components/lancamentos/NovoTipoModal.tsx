@@ -1,22 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { X } from "lucide-react";
 import { useConfiguracao } from "@/context/ConfiguracaoContext";
 import { useAcerto } from "@/context/AcertoContext";
 import type { TipoLancamento } from "@/types/configuracao";
-import styles from "./NovoTipoModal.module.css";
 
-interface Props {
-  onSalvar: (id: string) => void;
-  onFechar: () => void;
-}
+interface Props { onSalvar: (id: string) => void; onFechar: () => void; }
 
-const VAZIO: Omit<TipoLancamento, "id"> = {
-  nome: "",
-  conta: "",
-  subconta: "",
-  departamento: "",
-};
+const VAZIO: Omit<TipoLancamento, "id"> = { nome: "", conta: "", subconta: "", departamento: "" };
+const inputCls = "w-full rounded-lg bg-[#0F1117] border border-[#2A2F45] text-white text-sm px-3 py-2 focus:outline-none focus:border-[#6C63FF] transition-colors placeholder:text-[#8B8FA8]/50";
+const labelCls = "block text-xs font-medium text-[#8B8FA8] mb-1.5";
 
 export function NovoTipoModal({ onSalvar, onFechar }: Props) {
   const { tipos, addTipo } = useConfiguracao();
@@ -27,14 +21,10 @@ export function NovoTipoModal({ onSalvar, onFechar }: Props) {
 
   useEffect(() => {
     if (!salvando || tipos.length === 0) return;
-    const novoTipo = tipos[tipos.length - 1];
-    onSalvar(novoTipo.id);
+    onSalvar(tipos[tipos.length - 1].id);
   }, [tipos, salvando, onSalvar]);
 
-  const podeSubmeter =
-    form.nome.trim() !== "" &&
-    form.conta.trim() !== "" &&
-    form.departamento.trim() !== "";
+  const podeSubmeter = form.nome.trim() !== "" && form.conta.trim() !== "" && form.departamento.trim() !== "";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,87 +34,39 @@ export function NovoTipoModal({ onSalvar, onFechar }: Props) {
   };
 
   return (
-    <div className={styles.overlay} onClick={onFechar}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.cabecalho}>
-          <h2 className={styles.titulo}>Novo Tipo de Lançamento</h2>
-          <button
-            type="button"
-            className={styles.btnFechar}
-            onClick={onFechar}
-            aria-label="Fechar"
-          >
-            ×
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onFechar}>
+      <div className="w-full max-w-md rounded-2xl bg-[#1A1F2E] border border-[#2A2F45] shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#2A2F45]">
+          <h2 className="text-base font-semibold text-white">Novo Tipo de Lançamento</h2>
+          <button type="button" onClick={onFechar} className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8B8FA8] hover:text-white hover:bg-[#2A2F45] transition-colors">
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.grupo}>
-            <label className={styles.label}>Nome *</label>
-            <input
-              className={styles.input}
-              placeholder="Nome do tipo"
-              value={form.nome}
-              onChange={(e) => setForm((p) => ({ ...p, nome: e.target.value }))}
-              autoFocus
-            />
+        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
+          <div>
+            <label className={labelCls}>Nome *</label>
+            <input className={inputCls} placeholder="Nome do tipo" value={form.nome} onChange={(e) => setForm((p) => ({ ...p, nome: e.target.value }))} autoFocus />
           </div>
-          <div className={styles.grupo}>
-            <label className={styles.label}>Conta *</label>
-            <input
-              className={styles.input}
-              placeholder="Código da conta"
-              value={form.conta}
-              onChange={(e) => {
-                const conta = e.target.value;
-                setForm((p) => ({
-                  ...p,
-                  conta,
-                  ...(conta.startsWith("4") && departamentoCampanha
-                    ? { departamento: departamentoCampanha }
-                    : {}),
-                }));
-              }}
-            />
+          <div>
+            <label className={labelCls}>Conta *</label>
+            <input className={inputCls} placeholder="Código da conta" value={form.conta} onChange={(e) => {
+              const conta = e.target.value;
+              setForm((p) => ({ ...p, conta, ...(conta.startsWith("4") && departamentoCampanha ? { departamento: departamentoCampanha } : {}) }));
+            }} />
           </div>
-          <div className={styles.grupo}>
-            <label className={styles.label}>Subconta</label>
-            <input
-              className={styles.input}
-              placeholder="Código da subconta (opcional)"
-              value={form.subconta}
-              onChange={(e) =>
-                setForm((p) => ({ ...p, subconta: e.target.value }))
-              }
-            />
+          <div>
+            <label className={labelCls}>Subconta</label>
+            <input className={inputCls} placeholder="Código da subconta (opcional)" value={form.subconta} onChange={(e) => setForm((p) => ({ ...p, subconta: e.target.value }))} />
           </div>
-          <div className={styles.grupo}>
-            <label className={styles.label}>Departamento *</label>
-            <input
-              className={styles.input}
-              placeholder="Nome do departamento"
-              value={form.departamento}
-              onChange={(e) =>
-                setForm((p) => ({ ...p, departamento: e.target.value }))
-              }
-            />
+          <div>
+            <label className={labelCls}>Departamento *</label>
+            <input className={inputCls} placeholder="Nome do departamento" value={form.departamento} onChange={(e) => setForm((p) => ({ ...p, departamento: e.target.value }))} />
           </div>
 
-          <div className={styles.acoes}>
-            <button
-              type="button"
-              className={styles.btnCancelar}
-              onClick={onFechar}
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className={styles.btnSalvar}
-              disabled={!podeSubmeter}
-            >
-              Salvar Tipo
-            </button>
+          <div className="flex gap-3 justify-end pt-2">
+            <button type="button" onClick={onFechar} className="px-4 py-2 rounded-lg text-sm text-[#8B8FA8] hover:text-white border border-[#2A2F45] hover:border-[#6C63FF]/50 transition-colors">Cancelar</button>
+            <button type="submit" disabled={!podeSubmeter} className="px-4 py-2 rounded-lg text-sm font-medium bg-[#6C63FF] text-white hover:bg-[#5A52E8] disabled:opacity-40 disabled:cursor-not-allowed transition-colors">Salvar Tipo</button>
           </div>
         </form>
       </div>

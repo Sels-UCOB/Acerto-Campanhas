@@ -1,21 +1,21 @@
 import React from "react";
+import { cn } from "@/lib/utils";
 import type { StatusAcerto } from "@/types/acertoManager";
-import styles from "./BadgeStatus.module.css";
 
 interface Props {
   status: StatusAcerto;
 }
 
-const LABELS: Record<StatusAcerto, string> = {
-  Criado: "Criado",
-  "Em Aberto": "Em Aberto",
-  Encerrado: "Encerrado",
+const STYLES: Record<StatusAcerto, string> = {
+  Criado: "bg-[#2A2F45] text-[#8B8FA8]",
+  "Em Aberto": "bg-blue-500/15 text-blue-400 border border-blue-500/20",
+  Encerrado: "bg-green-500/15 text-green-400 border border-green-500/20",
 };
 
 export function BadgeStatus({ status }: Props) {
   return (
-    <span className={`${styles.badge} ${styles[status.replace(" ", "")]}`}>
-      {LABELS[status]}
+    <span className={cn("inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium", STYLES[status])}>
+      {status}
     </span>
   );
 }

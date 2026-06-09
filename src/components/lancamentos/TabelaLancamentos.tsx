@@ -1,194 +1,142 @@
 "use client";
 
 import React, { useState, useCallback } from "react";
+import { cn } from "@/lib/utils";
 import { useLancamento } from "@/context/LancamentoContext";
 import { useConfiguracao } from "@/context/ConfiguracaoContext";
 import { calcularSaldos } from "@/lib/calcularSaldos";
 import { formatarBRL } from "@/lib/parseRelatorioSaldo";
 import { NovoTipoModal } from "./NovoTipoModal";
-import styles from "./TabelaLancamentos.module.css";
+
+const inputCls = "w-full rounded-md bg-[#0F1117] border border-[#2A2F45] text-white text-sm px-2 py-1.5 focus:outline-none focus:border-[#6C63FF] transition-colors";
 
 export function TabelaLancamentos() {
-  const { lancamentos, addLancamento, updateLancamento, removeLancamento } =
-    useLancamento();
+  const { lancamentos, addLancamento, updateLancamento, removeLancamento } = useLancamento();
   const { tipos } = useConfiguracao();
   const [modalRowId, setModalRowId] = useState<string | null>(null);
-
   const saldos = calcularSaldos(lancamentos);
 
-  const handleValor = useCallback(
-    (id: string, raw: string) => {
-      const num = raw === "" ? null : parseFloat(raw);
-      updateLancamento(id, { valor: num === null || isNaN(num) ? null : num });
-    },
-    [updateLancamento]
-  );
+  const handleValor = useCallback((id: string, raw: string) => {
+    const num = raw === "" ? null : parseFloat(raw);
+    updateLancamento(id, { valor: num === null || isNaN(num) ? null : num });
+  }, [updateLancamento]);
 
-  const handleSaldoManual = useCallback(
-    (id: string, raw: string) => {
-      const num = raw === "" ? 0 : parseFloat(raw);
-      updateLancamento(id, { saldoManual: isNaN(num) ? 0 : num });
-    },
-    [updateLancamento]
-  );
+  const handleSaldoManual = useCallback((id: string, raw: string) => {
+    const num = raw === "" ? 0 : parseFloat(raw);
+    updateLancamento(id, { saldoManual: isNaN(num) ? 0 : num });
+  }, [updateLancamento]);
 
   const saldoFinal = saldos.length > 0 ? saldos[saldos.length - 1] : 0;
+  const thCls = "px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#8B8FA8]";
 
   return (
-    <div className={styles.container}>
+    <div className="space-y-3">
       {modalRowId && (
         <NovoTipoModal
-          onSalvar={(id) => {
-            updateLancamento(modalRowId, { tipoLancamentoId: id });
-            setModalRowId(null);
-          }}
+          onSalvar={(id) => { updateLancamento(modalRowId, { tipoLancamentoId: id }); setModalRowId(null); }}
           onFechar={() => setModalRowId(null)}
         />
       )}
 
-      <div className={styles.tableWrapper}>
-        <table className={styles.tabela}>
-          <thead>
-            <tr>
-              <th className={styles.thNum}>#</th>
-              <th className={styles.thTipo}>Tipo Lançamento</th>
-              <th className={styles.thHistorico}>Histórico</th>
-              <th className={styles.thValor}>D/C</th>
-              <th className={styles.thSaldo}>Saldo</th>
-              <th className={styles.thAcao} aria-label="Ações" />
-            </tr>
-          </thead>
-          <tbody>
-            {lancamentos.map((lanc, idx) => {
-              const saldo = saldos[idx] ?? 0;
-              const isPrimeira = idx === 0;
+      <div className="rounded-2xl bg-[#1A1F2E] border border-[#2A2F45] overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-[#2A2F45]">
+                <th className={cn(thCls, "w-10")}>#</th>
+                <th className={thCls}>Tipo Lançamento</th>
+                <th className={thCls}>Histórico</th>
+                <th className={cn(thCls, "text-right")}>D/C</th>
+                <th className={cn(thCls, "text-right")}>Saldo</th>
+                <th className={cn(thCls, "w-8")}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {lancamentos.map((lanc, idx) => {
+                const saldo = saldos[idx] ?? 0;
+                const isPrimeira = idx === 0;
 
-              return (
-                <tr
-                  key={lanc.id}
-                  className={isPrimeira ? styles.linhaSaldoInicial : ""}
-                >
-                  <td className={styles.tdNum}>{idx + 1}</td>
+                return (
+                  <tr key={lanc.id} className={cn("border-b border-[#2A2F45]/50 last:border-0", isPrimeira && "bg-[#6C63FF]/5")}>
+                    <td className="px-3 py-2.5 text-[#8B8FA8] text-xs">{idx + 1}</td>
 
-                  {isPrimeira ? (
-                    <td colSpan={3} className={styles.tdSaldoInicialLabel}>
-                      Saldo Inicial
-                    </td>
-                  ) : (
-                    <>
-                      <td className={styles.tdTipo}>
-                        <select
-                          value={lanc.tipoLancamentoId}
-                          onChange={(e) => {
-                            if (e.target.value === "__novo__") {
-                              setModalRowId(lanc.id);
-                            } else {
-                              updateLancamento(lanc.id, {
-                                tipoLancamentoId: e.target.value,
-                              });
-                            }
-                          }}
-                          className={styles.selectTipo}
-                        >
-                          <option value="">— selecione —</option>
-                          {tipos.map((t) => (
-                            <option key={t.id} value={t.id}>
-                              {t.nome}
-                            </option>
-                          ))}
-                          <option disabled>──────────</option>
-                          <option value="__novo__">
-                            + Novo Tipo de Lançamento...
-                          </option>
-                        </select>
+                    {isPrimeira ? (
+                      <td colSpan={3} className="px-3 py-2.5 text-xs font-semibold text-[#6C63FF] uppercase tracking-wider">
+                        Saldo Inicial
                       </td>
+                    ) : (
+                      <>
+                        <td className="px-3 py-2">
+                          <select
+                            value={lanc.tipoLancamentoId}
+                            onChange={(e) => {
+                              if (e.target.value === "__novo__") setModalRowId(lanc.id);
+                              else updateLancamento(lanc.id, { tipoLancamentoId: e.target.value });
+                            }}
+                            className={cn(inputCls, "min-w-36")}
+                          >
+                            <option value="">— selecione —</option>
+                            {tipos.map((t) => <option key={t.id} value={t.id}>{t.nome}</option>)}
+                            <option disabled>──────────</option>
+                            <option value="__novo__">+ Novo Tipo...</option>
+                          </select>
+                        </td>
+                        <td className="px-3 py-2">
+                          <input type="text" value={lanc.historico} onChange={(e) => updateLancamento(lanc.id, { historico: e.target.value })} className={inputCls} placeholder="Descrição" />
+                        </td>
+                        <td className="px-3 py-2">
+                          <input
+                            type="number"
+                            value={lanc.valor ?? ""}
+                            onChange={(e) => handleValor(lanc.id, e.target.value)}
+                            className={cn(inputCls, "text-right w-28", lanc.valor !== null && lanc.valor < 0 && "text-red-400")}
+                            step="0.01"
+                            placeholder="+/- valor"
+                          />
+                        </td>
+                      </>
+                    )}
 
-                      <td className={styles.tdHistorico}>
-                        <input
-                          type="text"
-                          value={lanc.historico}
-                          onChange={(e) =>
-                            updateLancamento(lanc.id, {
-                              historico: e.target.value,
-                            })
-                          }
-                          className={styles.inputTexto}
-                          placeholder="Descrição"
-                        />
-                      </td>
-
-                      <td className={styles.tdValor}>
+                    <td className={cn("px-3 py-2.5 text-right text-sm tabular-nums", saldo < 0 ? "text-red-400" : "text-white")}>
+                      {isPrimeira ? (
                         <input
                           type="number"
-                          value={lanc.valor ?? ""}
-                          onChange={(e) => handleValor(lanc.id, e.target.value)}
-                          className={`${styles.inputNum} ${
-                            lanc.valor !== null && lanc.valor < 0
-                              ? styles.valorNegativo
-                              : ""
-                          }`}
+                          value={lanc.saldoManual ?? ""}
+                          onChange={(e) => handleSaldoManual(lanc.id, e.target.value)}
+                          className={cn(inputCls, "text-right w-28")}
                           step="0.01"
-                          placeholder="+/- valor"
+                          placeholder="0,00"
                         />
-                      </td>
-                    </>
-                  )}
+                      ) : (
+                        <span>{formatarBRL(saldo)}</span>
+                      )}
+                    </td>
 
-                  <td
-                    className={`${styles.tdSaldo} ${
-                      saldo < 0 ? styles.negativo : ""
-                    }`}
-                  >
-                    {isPrimeira ? (
-                      <input
-                        type="number"
-                        value={lanc.saldoManual ?? ""}
-                        onChange={(e) =>
-                          handleSaldoManual(lanc.id, e.target.value)
-                        }
-                        className={`${styles.inputNum} ${styles.inputSaldoInicial}`}
-                        step="0.01"
-                        placeholder="0,00"
-                      />
-                    ) : (
-                      <span className={styles.saldoValor}>
-                        {formatarBRL(saldo)}
-                      </span>
-                    )}
-                  </td>
-
-                  <td className={styles.tdAcao}>
-                    {!isPrimeira && (
-                      <button
-                        type="button"
-                        onClick={() => removeLancamento(lanc.id)}
-                        className={styles.btnRemover}
-                        aria-label={`Remover linha ${idx + 1}`}
-                      >
-                        ×
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                    <td className="px-3 py-2.5 text-center">
+                      {!isPrimeira && (
+                        <button
+                          type="button"
+                          onClick={() => removeLancamento(lanc.id)}
+                          className="w-6 h-6 rounded-md flex items-center justify-center text-[#8B8FA8] hover:text-red-400 hover:bg-red-500/10 transition-colors text-base leading-none"
+                          aria-label={`Remover linha ${idx + 1}`}
+                        >
+                          ×
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div className={styles.rodape}>
-        <button
-          type="button"
-          onClick={addLancamento}
-          className={styles.btnAddLinha}
-        >
+      <div className="flex items-center justify-between">
+        <button type="button" onClick={addLancamento} className="px-4 py-2 rounded-xl text-sm font-medium bg-[#2A2F45] text-[#8B8FA8] hover:text-white transition-colors">
           + Adicionar Linha
         </button>
-        <span
-          className={`${styles.saldoFinal} ${
-            saldoFinal < 0 ? styles.negativo : ""
-          }`}
-        >
+        <span className={cn("text-sm font-medium", saldoFinal < 0 ? "text-red-400" : "text-white")}>
           Saldo final: <strong>{formatarBRL(saldoFinal)}</strong>
         </span>
       </div>

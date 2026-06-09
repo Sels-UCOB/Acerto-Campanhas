@@ -1,51 +1,78 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.25s ease-out;
+}
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --font-heading: var(--font-sans);
+    --font-sans: 'Geist Variable', sans-serif;
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
 }
 
 :root {
-  /* Cores base */
-  --fundo: #f5f4f0;
-  --fundo-alt: #eeede8;
-  --superficie: #ffffff;
-  --superficie-alt: #fafaf8;
-  --superficie-hover: #f5f4f0;
-  --borda: #e2e0d8;
-
-  /* Tipografia */
-  --texto: #1a1916;
-  --texto-secundario: #6b6860;
-  --texto-terciario: #a8a59e;
-
-  /* Acento — verde musgo profissional */
-  --acento: #3d6b4f;
-  --acento-hover: #2e5440;
-  --acento-alpha: rgba(61, 107, 79, 0.12);
-
-  /* Semânticas */
-  --sucesso: #2d6a4f;
-  --sucesso-bg: #edf7f1;
-  --erro: #b33a3a;
-  --erro-bg: #fdf0f0;
-
-  /* Layout */
-  --raio: 10px;
-  --sombra: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+    --background: #0F1117;
+    --foreground: #FFFFFF;
+    --card: #1A1F2E;
+    --card-foreground: #FFFFFF;
+    --popover: #1A1F2E;
+    --popover-foreground: #FFFFFF;
+    --primary: #6C63FF;
+    --primary-foreground: #FFFFFF;
+    --secondary: #1E2235;
+    --secondary-foreground: #FFFFFF;
+    --muted: #1E2235;
+    --muted-foreground: #8B8FA8;
+    --accent: #1E2235;
+    --accent-foreground: #FFFFFF;
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: #2A2F45;
+    --input: #2A2F45;
+    --ring: #6C63FF;
+    --radius: 0.625rem;
 }
 
-html, body {
-  font-family: 'IBM Plex Sans', system-ui, sans-serif;
-  background: var(--fundo);
-  color: var(--texto);
-  line-height: 1.6;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    -webkit-font-smoothing: antialiased;
+  }
 }
 
 /* Scrollbar sutil */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--borda); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: #2A2F45; border-radius: 3px; }

@@ -1,10 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 import { useConfiguracao } from "@/context/ConfiguracaoContext";
 import { useAcerto } from "@/context/AcertoContext";
 import { ConfirmDialog } from "./ConfirmDialog";
-import styles from "./Lideres.module.css";
+
+const inputCls = "w-full rounded-lg bg-[#0F1117] border border-[#2A2F45] text-white text-sm px-3 py-2 focus:outline-none focus:border-[#6C63FF] transition-colors placeholder:text-[#8B8FA8]/50";
+const labelCls = "block text-xs font-medium text-[#8B8FA8] mb-1.5";
 
 export function Lideres() {
   const { lideres, initLideres, updateLider, deleteLider } = useConfiguracao();
@@ -17,13 +20,11 @@ export function Lideres() {
     initLideres(nomes);
   }, [initLideres, state.config.lideres, state.config.caixa.nome]);
 
-  const naoConfigurados = lideres.filter(
-    (l) => !l.subcontaLider.trim() || !l.subcontaLucro.trim()
-  );
+  const naoConfigurados = lideres.filter((l) => !l.subcontaLider.trim() || !l.subcontaLucro.trim());
   const liderAlvo = lideres.find((l) => l.id === confirmarId);
 
   return (
-    <div className={styles.container}>
+    <div className="space-y-4">
       {confirmarId && liderAlvo && (
         <ConfirmDialog
           mensagem={`Tem certeza que deseja excluir o líder "${liderAlvo.nome}"?`}
@@ -33,79 +34,63 @@ export function Lideres() {
       )}
 
       {naoConfigurados.length > 0 && (
-        <div className={styles.aviso} role="alert">
-          ⚠ Por Favor, configure as Subcontas do(s) Líderes!
+        <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm" role="alert">
+          <span>⚠</span>
+          <span>Por favor, configure as Subcontas do(s) Líderes!</span>
         </div>
       )}
 
       {lideres.length === 0 ? (
-        <p className={styles.vazio}>
-          Nenhum líder encontrado. Configure os líderes na tela de Importação &amp; Configuração primeiro.
-        </p>
+        <div className="rounded-2xl bg-[#1A1F2E] border border-[#2A2F45] p-8 text-center">
+          <p className="text-sm text-[#8B8FA8]">
+            Nenhum líder encontrado. Configure os líderes na tela de Importação &amp; Configuração primeiro.
+          </p>
+        </div>
       ) : (
-        <div className={styles.lista}>
+        <div className="space-y-3">
           {lideres.map((lider) => {
-            const incompleto =
-              !lider.subcontaLider.trim() || !lider.subcontaLucro.trim();
+            const incompleto = !lider.subcontaLider.trim() || !lider.subcontaLucro.trim();
             return (
-              <div
-                key={lider.id}
-                className={`${styles.card} ${incompleto ? styles.cardIncompleto : styles.cardOk}`}
-              >
-                <div className={styles.cardHeader}>
-                  <div className={styles.nomeArea}>
-                    <span className={styles.nomeLider}>{lider.nome}</span>
+              <div key={lider.id} className={cn("rounded-2xl bg-[#1A1F2E] border p-5 space-y-4", incompleto ? "border-amber-500/30" : "border-[#2A2F45]")}>
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-white">{lider.nome}</span>
                     {incompleto ? (
-                      <span className={styles.badgeAviso}>Não configurado</span>
+                      <span className="px-2 py-0.5 rounded-md text-xs font-medium bg-amber-500/15 text-amber-400 border border-amber-500/20">Não configurado</span>
                     ) : (
-                      <span className={styles.badgeOk}>Configurado</span>
+                      <span className="px-2 py-0.5 rounded-md text-xs font-medium bg-green-500/15 text-green-400 border border-green-500/20">Configurado</span>
                     )}
                   </div>
                   <button
-                    className={styles.btnExcluir}
+                    className="px-2.5 py-1 rounded-lg text-xs font-medium bg-[#2A2F45] text-[#8B8FA8] hover:text-red-400 transition-colors"
                     onClick={() => setConfirmarId(lider.id)}
                     type="button"
-                    aria-label={`Excluir líder ${lider.nome}`}
                   >
                     Excluir
                   </button>
                 </div>
 
-                <div className={styles.campos}>
-                  <div className={styles.grupo}>
-                    <label
-                      className={styles.label}
-                      htmlFor={`subcontaLider-${lider.id}`}
-                    >
-                      Subconta Líder *
-                    </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelCls} htmlFor={`subcontaLider-${lider.id}`}>Subconta Líder *</label>
                     <input
                       id={`subcontaLider-${lider.id}`}
-                      className={`${styles.input} ${!lider.subcontaLider.trim() ? styles.inputVazio : ""}`}
+                      className={cn(inputCls, !lider.subcontaLider.trim() && "border-amber-500/40")}
                       type="text"
                       placeholder="Código da subconta"
                       value={lider.subcontaLider}
-                      onChange={(e) =>
-                        updateLider(lider.id, { subcontaLider: e.target.value })
-                      }
+                      onChange={(e) => updateLider(lider.id, { subcontaLider: e.target.value })}
                     />
                   </div>
-                  <div className={styles.grupo}>
-                    <label
-                      className={styles.label}
-                      htmlFor={`subcontaLucro-${lider.id}`}
-                    >
-                      Subconta Lucro *
-                    </label>
+                  <div>
+                    <label className={labelCls} htmlFor={`subcontaLucro-${lider.id}`}>Subconta Lucro *</label>
                     <input
                       id={`subcontaLucro-${lider.id}`}
-                      className={`${styles.input} ${!lider.subcontaLucro.trim() ? styles.inputVazio : ""}`}
+                      className={cn(inputCls, !lider.subcontaLucro.trim() && "border-amber-500/40")}
                       type="text"
                       placeholder="Código da subconta"
                       value={lider.subcontaLucro}
-                      onChange={(e) =>
-                        updateLider(lider.id, { subcontaLucro: e.target.value })
-                      }
+                      onChange={(e) => updateLider(lider.id, { subcontaLucro: e.target.value })}
                     />
                   </div>
                 </div>

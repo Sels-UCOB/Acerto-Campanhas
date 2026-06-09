@@ -7,7 +7,6 @@ import { FiltrosAcertos } from "@/components/acertos/FiltrosAcertos";
 import { TabelaAcertos } from "@/components/acertos/TabelaAcertos";
 import { ModalCriarAcerto } from "@/components/acertos/ModalCriarAcerto";
 import type { AcertoMeta, CriarAcertoData, FiltrosAcerto } from "@/types/acertoManager";
-import styles from "./page.module.css";
 
 const FILTROS_INICIAIS: FiltrosAcerto = {
   status: "todos",
@@ -19,14 +18,8 @@ const FILTROS_INICIAIS: FiltrosAcerto = {
 
 export default function PainelAcertosPage() {
   const router = useRouter();
-  const {
-    acertos,
-    activeId,
-    createAcerto,
-    updateAcerto,
-    deleteAcerto,
-    setActiveAcerto,
-  } = useAcertosManager();
+  const { acertos, activeId, createAcerto, updateAcerto, deleteAcerto, setActiveAcerto } =
+    useAcertosManager();
 
   const [filtros, setFiltros] = useState<FiltrosAcerto>(FILTROS_INICIAIS);
   const [modalAberto, setModalAberto] = useState(false);
@@ -36,19 +29,9 @@ export default function PainelAcertosPage() {
     return acertos.filter((a) => {
       if (filtros.status !== "todos" && a.status !== filtros.status) return false;
       if (filtros.campo !== "todos" && a.campo !== filtros.campo) return false;
-      if (
-        filtros.tipoCampanha !== "todos" &&
-        a.tipoCampanha !== filtros.tipoCampanha
-      )
-        return false;
-      if (filtros.dataInicio) {
-        const desde = filtros.dataInicio + "T00:00:00";
-        if (a.dataCriacao < desde) return false;
-      }
-      if (filtros.dataFim) {
-        const ate = filtros.dataFim + "T23:59:59";
-        if (a.dataCriacao > ate) return false;
-      }
+      if (filtros.tipoCampanha !== "todos" && a.tipoCampanha !== filtros.tipoCampanha) return false;
+      if (filtros.dataInicio && a.dataCriacao < filtros.dataInicio + "T00:00:00") return false;
+      if (filtros.dataFim && a.dataCriacao > filtros.dataFim + "T23:59:59") return false;
       return true;
     });
   }, [acertos, filtros]);
@@ -76,10 +59,6 @@ export default function PainelAcertosPage() {
     setModalAberto(true);
   };
 
-  const handleExcluir = (acerto: AcertoMeta) => {
-    deleteAcerto(acerto.id);
-  };
-
   const handleFecharModal = () => {
     setModalAberto(false);
     setAcertoParaEditar(null);
@@ -95,79 +74,56 @@ export default function PainelAcertosPage() {
   );
 
   return (
-    <div className={styles.pagina}>
-      <main className={styles.main}>
-        {/* Cabeçalho */}
-        <div className={styles.cabecalho}>
-          <div>
-            <h1 className={styles.titulo}>Painel de Acertos</h1>
-            <p className={styles.subtitulo}>
-              Gerencie os ciclos de acerto das campanhas de colportagem
-            </p>
-          </div>
-          <button
-            type="button"
-            className={styles.btnNovo}
-            onClick={() => {
-              setAcertoParaEditar(null);
-              setModalAberto(true);
-            }}
-          >
-            + Novo Acerto
-          </button>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-xl sm:text-2xl md:text-3xl tracking-tight text-white">Painel de Acertos</h1>
+          <p className="text-sm text-[#8B8FA8] mt-1">Gerencie os ciclos de acerto das campanhas de colportagem.</p>
         </div>
+        <button
+          type="button"
+          className="shrink-0 px-4 py-2 rounded-xl bg-[#6C63FF] text-white font-medium text-sm hover:bg-[#5A52E8] transition-colors"
+          onClick={() => { setAcertoParaEditar(null); setModalAberto(true); }}
+        >
+          + Novo Acerto
+        </button>
+      </div>
 
-        {/* Resumo rápido */}
-        {acertos.length > 0 && (
-          <div className={styles.resumo}>
-            <div className={styles.resumoItem}>
-              <span className={styles.resumoNum}>{totalPorStatus.Criado}</span>
-              <span className={styles.resumoLabel}>Criado</span>
+      {/* Resumo rápido */}
+      {acertos.length > 0 && (
+        <div className="grid grid-cols-4 gap-3">
+          {[
+            { label: "Criado", value: totalPorStatus.Criado, color: "text-[#8B8FA8]" },
+            { label: "Em Aberto", value: totalPorStatus["Em Aberto"], color: "text-blue-400" },
+            { label: "Encerrado", value: totalPorStatus.Encerrado, color: "text-green-400" },
+            { label: "Total", value: acertos.length, color: "text-white" },
+          ].map(({ label, value, color }) => (
+            <div key={label} className="rounded-xl bg-[#1A1F2E] border border-[#2A2F45] p-4 text-center">
+              <p className={`text-2xl font-bold ${color}`}>{value}</p>
+              <p className="text-xs text-[#8B8FA8] mt-1">{label}</p>
             </div>
-            <div className={styles.resumoItem}>
-              <span className={`${styles.resumoNum} ${styles.resumoAberto}`}>
-                {totalPorStatus["Em Aberto"]}
-              </span>
-              <span className={styles.resumoLabel}>Em Aberto</span>
-            </div>
-            <div className={styles.resumoItem}>
-              <span className={`${styles.resumoNum} ${styles.resumoEncerrado}`}>
-                {totalPorStatus.Encerrado}
-              </span>
-              <span className={styles.resumoLabel}>Encerrado</span>
-            </div>
-            <div className={styles.resumoItem}>
-              <span className={styles.resumoNum}>{acertos.length}</span>
-              <span className={styles.resumoLabel}>Total</span>
-            </div>
-          </div>
-        )}
+          ))}
+        </div>
+      )}
 
-        {/* Filtros */}
-        <FiltrosAcertos filtros={filtros} onChange={setFiltros} />
+      <FiltrosAcertos filtros={filtros} onChange={setFiltros} />
 
-        {/* Tabela */}
-        <TabelaAcertos
-          acertos={acertosFiltrados}
-          activeId={activeId}
-          onEntrar={handleEntrar}
-          onEditar={handleAbrirEditar}
-          onExcluir={handleExcluir}
-        />
-      </main>
+      <TabelaAcertos
+        acertos={acertosFiltrados}
+        activeId={activeId}
+        onEntrar={handleEntrar}
+        onEditar={handleAbrirEditar}
+        onExcluir={(a) => deleteAcerto(a.id)}
+      />
 
-      {/* Modal criar / editar */}
       {modalAberto && (
         <ModalCriarAcerto
           onClose={handleFecharModal}
           onSalvar={acertoParaEditar ? handleEditar : handleCriar}
           dadosIniciais={
             acertoParaEditar
-              ? {
-                  nome: acertoParaEditar.nome,
-                  campo: acertoParaEditar.campo,
-                  tipoCampanha: acertoParaEditar.tipoCampanha,
-                }
+              ? { nome: acertoParaEditar.nome, campo: acertoParaEditar.campo, tipoCampanha: acertoParaEditar.tipoCampanha }
               : undefined
           }
           modoEdicao={!!acertoParaEditar}

@@ -4,10 +4,9 @@ import React, { useState } from "react";
 import { TiposLancamento } from "@/components/configuracoes/TiposLancamento";
 import { Campos } from "@/components/configuracoes/Campos";
 import { Lideres } from "@/components/configuracoes/Lideres";
-import styles from "./page.module.css";
+import { cn } from "@/lib/utils";
 
 type Aba = "tipos" | "campos" | "lideres";
-
 const ABAS: { id: Aba; label: string }[] = [
   { id: "tipos",   label: "Tipos de Lançamento" },
   { id: "campos",  label: "Campos" },
@@ -18,29 +17,34 @@ export default function ConfiguracoesPage() {
   const [aba, setAba] = useState<Aba>("tipos");
 
   return (
-    <div className={styles.pagina}>
-      <main className={styles.main}>
-        <h1 className={styles.titulo}>Configurações</h1>
-        <nav className={styles.tabs} aria-label="Seções de configuração">
-          {ABAS.map((a) => (
-            <button
-              key={a.id}
-              className={`${styles.tab} ${aba === a.id ? styles.tabAtiva : ""}`}
-              onClick={() => setAba(a.id)}
-              type="button"
-              aria-current={aba === a.id ? "page" : undefined}
-            >
-              {a.label}
-            </button>
-          ))}
-        </nav>
+    <div className="space-y-6">
+      <h1 className="text-xl sm:text-2xl md:text-3xl tracking-tight text-white">Configurações</h1>
+      <p className="text-sm text-[#8B8FA8] mt-1">Tipos de lançamento, campos e percentuais dos líderes.</p>
 
-        <div className={styles.conteudo}>
-          {aba === "tipos"   && <TiposLancamento />}
-          {aba === "campos"  && <Campos />}
-          {aba === "lideres" && <Lideres />}
-        </div>
-      </main>
+      <nav className="flex gap-1 p-1 rounded-xl bg-[#1A1F2E] border border-[#2A2F45] w-fit">
+        {ABAS.map((a) => (
+          <button
+            key={a.id}
+            type="button"
+            aria-current={aba === a.id ? "page" : undefined}
+            onClick={() => setAba(a.id)}
+            className={cn(
+              "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+              aba === a.id
+                ? "bg-[#6C63FF] text-white"
+                : "text-[#8B8FA8] hover:text-white hover:bg-[#2A2F45]/50"
+            )}
+          >
+            {a.label}
+          </button>
+        ))}
+      </nav>
+
+      <div>
+        {aba === "tipos"   && <TiposLancamento />}
+        {aba === "campos"  && <Campos />}
+        {aba === "lideres" && <Lideres />}
+      </div>
     </div>
   );
 }
