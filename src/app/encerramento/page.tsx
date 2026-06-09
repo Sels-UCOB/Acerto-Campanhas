@@ -16,7 +16,6 @@ export default function EncerramentoPage() {
         <div className={styles.paginaTitulo}>
           <h1 className={styles.titulo}>Encerramento</h1>
           <span className={styles.badge}>Resumo final</span>
-          <BotaoEncerrar />
           <BotaoGerarCSV />
           <BotoesExportarPDF />
         </div>
@@ -25,6 +24,9 @@ export default function EncerramentoPage() {
           <ResumoCampanha />
           <ResumoLideresTabela />
           <DiferencaCaixa />
+          <div className={styles.acaoEncerrar}>
+            <BotaoEncerrar />
+          </div>
         </div>
       </main>
     </div>

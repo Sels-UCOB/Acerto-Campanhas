@@ -44,6 +44,12 @@
   gap: 1.5rem;
 }
 
+.acaoEncerrar {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.25rem;
+}
+
 @media (max-width: 800px) {
   .main {
     padding: 1.25rem 1rem;
