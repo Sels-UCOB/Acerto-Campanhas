@@ -17,7 +17,6 @@ const META_KEY = "acertos_meta_v1";
 const ACTIVE_KEY = "acertos_active_v1";
 
 function loadMeta(): AcertoMeta[] {
-  if (typeof window === "undefined") return [];
   try {
     const s = localStorage.getItem(META_KEY);
     return s ? JSON.parse(s) : [];
@@ -27,7 +26,6 @@ function loadMeta(): AcertoMeta[] {
 }
 
 function loadActiveId(list: AcertoMeta[]): string | null {
-  if (typeof window === "undefined") return null;
   const id = localStorage.getItem(ACTIVE_KEY);
   if (!id) return null;
   return list.some((a) => a.id === id) ? id : null;
@@ -56,16 +54,26 @@ interface AcertosManagerContextValue {
 const AcertosManagerContext = createContext<AcertosManagerContextValue | null>(null);
 
 export function AcertosManagerProvider({ children }: { children: ReactNode }) {
-  const [acertos, setAcertos] = useState<AcertoMeta[]>(() => loadMeta());
-  const [activeId, setActiveIdState] = useState<string | null>(() => {
-    const list = loadMeta();
-    return loadActiveId(list);
-  });
+  // Inicializa vazio — sem lazy initializer que leria localStorage durante SSR/hidratação
+  const [acertos, setAcertos] = useState<AcertoMeta[]>([]);
+  const [activeId, setActiveIdState] = useState<string | null>(null);
+  // Impede o efeito de persistência de sobrescrever dados antes da carga inicial
+  const [carregado, setCarregado] = useState(false);
 
-  // Persiste a lista sempre que mudar
+  // Carrega do localStorage apenas no cliente, após a montagem
   useEffect(() => {
+    const list = loadMeta();
+    const id = loadActiveId(list);
+    setAcertos(list);
+    setActiveIdState(id);
+    setCarregado(true);
+  }, []);
+
+  // Persiste a lista sempre que mudar, mas só após o carregamento inicial
+  useEffect(() => {
+    if (!carregado) return;
     localStorage.setItem(META_KEY, JSON.stringify(acertos));
-  }, [acertos]);
+  }, [acertos, carregado]);
 
   const setActiveAcerto = useCallback((id: string | null) => {
     setActiveIdState(id);
@@ -88,7 +96,6 @@ export function AcertosManagerProvider({ children }: { children: ReactNode }) {
         status: "Criado",
       };
 
-      // Pré-inicializa o estado do acerto com campo e tipoCampanha escolhidos
       const initialState: AcertoState = {
         dadosImportados: null,
         config: {
